@@ -154,6 +154,25 @@ export default function SignInPage() {
           background: rgba(255, 255, 255, 0.05);
           border-color: ${currentSubject.color}40;
         }
+          @media (max-width: 1024px) {
+  .glass-panel-main {
+    width: 95% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .glass-panel-main {
+    flex-direction: column !important;
+    width: 95% !important;
+    margin: 20px auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-panel-main {
+    border-radius: 20px !important;
+  }
+}
       `}} />
 
       {/* Cybernetic Particle Mesh Nodes */}
@@ -167,22 +186,23 @@ export default function SignInPage() {
       <div
         className="glass-panel-main"
         style={{
-          width: "100%",
-          maxWidth: "1160px",
-          borderRadius: "32px",
-          display: "flex",
-          flexDirection: "row",
-          overflow: "hidden",
-          zIndex: 2,
-        }}
+  width: "95%",
+  maxWidth: "1160px",
+  minHeight: "clamp(550px,80vh,750px)",
+  borderRadius: "32px",
+  display: "flex",
+  flexWrap: "wrap",
+  overflow: "hidden",
+  zIndex: 2,
+}}
       >
         {/* LEFT CANVAS LAYOUT: Multidisciplinary 3D Hub Projection */}
         <div
           style={{
-            flex: 1.25,
+            flex: "1 1 500px",
             
 background: "rgba(18, 23, 24, 0.4)",
-            padding: "50px",
+            padding: "clamp(20px,4vw,50px)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
