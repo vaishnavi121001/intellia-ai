@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: "DM Sans", sans-serif;
+  background: #f8f8f8;
+  color: #111;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#__next {
+  height: 100vh;
+  overflow: hidden;
+}
+
+input, textarea, button {
+  font-family: "DM Sans", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bop {
+  0%, 80%, 100% {
+    transform: scale(0.65);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+        .answer-wrap { 
+          background: #fff; 
+          border: 1.5px solid #e5e7eb; 
+          border-radius: 14px; 
+           
+          margin-top: 20px; 
+          font-size: 14.5px; 
+          line-height: 1.78; 
+          color: #1a1a1a; 
+          max-height: 70vh; 
+          overflow-y: auto; 
+          animation: fadeUp .3s ease;
+          box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        }
+
+.dot {
+  animation: bop 0.75s ease infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
