@@ -64,7 +64,7 @@ export default function Sidebar({
   }}
 >
   <img
-    src="/intellia-ai.png"
+    src="/Intellia-ai.png"
     alt="Intellia AI"
     style={{
       width: "180px",      
