@@ -1344,7 +1344,7 @@ ${fileContent}
                   >
                     {card.icon}
                   </div>
-                  <div style={{ padding: "18px 20px" }}>
+                  <div>
                     <p style={{ fontWeight: 700, fontSize: 15, color: "#111", marginBottom: 6, lineHeight: 1.4 }}>{card.title}</p>
                     <p style={{ fontSize: 13.5, color: "#6b7280", marginBottom: 14, lineHeight: 1.5 }}>{card.desc}</p>
                     <button
@@ -1354,7 +1354,7 @@ ${fileContent}
                         color: "#fff",
                         border: "none",
                         borderRadius: 12,
-                        padding: "10px 18px",
+                        
                         fontWeight: 700,
                         cursor: "pointer",
                         boxShadow: "0 10px 25px rgba(79,70,229,.35)",
