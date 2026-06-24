@@ -247,9 +247,11 @@ export default function ChatPage() {
   const [showNoCredits, setShowNoCredits] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
+
+  const [selectedFile, setSelectedFile] = useState(null);
   const cycleRef = useRef(null);
   const inputRef = useRef(null);
-
+  const fileInputRef = useRef(null);
   // Load user
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -418,6 +420,29 @@ export default function ChatPage() {
     }
 
     const question = inputValue.trim();
+
+    let fileContent = "";
+
+    if (selectedFile) {
+      try {
+        fileContent = await selectedFile.text();
+      } catch (err) {
+        console.error("File read error:", err);
+      }
+    }
+
+    const finalPrompt = selectedFile
+      ? `
+User Question:
+${question}
+
+Attached File Name:
+${selectedFile.name}
+
+Attached File Content:
+${fileContent}
+`
+      : question;
     setLoading(true);
     setAnswer("");
     setError("");
@@ -449,7 +474,7 @@ export default function ChatPage() {
       // Call Groq
       const text = await groqChat({
         systemPrompt,
-        messages: [{ role: "user", content: question }],
+        messages: [{ role: "user", content: finalPrompt }],
         maxTokens: 4000,
       });
 
@@ -977,35 +1002,201 @@ export default function ChatPage() {
               key={t} className={`tab${activeTab === i ? " on" : ""}`} onClick={() => setActiveTab(i)} title={`Switch to ${t}`}> {t} </button>))}</div>
 
         {/* Input Box */}
-        <div style={{
-          width: "100%", maxWidth: 860, border: "1.5px solid #e5e7eb", borderRadius: 18, padding: "20px 24px", background: "rgb(236, 225, 225)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.15)", boxShadow: "0 1px 3px rgba(0,0,0,.05)", marginBottom: 12
-        }}>
-          <textarea ref={inputRef} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSolve(); }} placeholder={`Ask anything about ${subject.name}...`} style={{ width: "100%", minHeight: 84, border: "none", outline: "none", resize: "none", fontSize: 15, color: "#111", background: "transparent", fontFamily: "'DM Sans',sans-serif", lineHeight: 1.7 }} />
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}><button title="Attach" style={{ background: "none", border: "1.5px solid #e5e7eb", cursor: "pointer", color: "#9ca3af", fontSize: 15, borderRadius: 8, padding: "6px 10px", transition: "all .15s" }}>📎</button>
-              <span style={{ fontSize: 12, color: "#d1d5db" }}>⌘+Enter</span>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 860,
+            borderRadius: 18,
+            padding: "20px 24px",
+            background: "rgb(236, 225, 225)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 1px 3px rgba(0,0,0,.05)",
+            marginBottom: 12,
+          }}
+        >
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+
+              if (file) {
+                setSelectedFile(file);
+                console.log("Selected file:", file);
+              }
+            }}
+          />
+
+          {/* Textarea */}
+          <textarea
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                handleSolve();
+              }
+            }}
+            placeholder={`Ask anything about ${subject.name}...`}
+            style={{
+              width: "100%",
+              minHeight: 84,
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: 15,
+              color: "#111",
+              background: "transparent",
+              fontFamily: "'DM Sans',sans-serif",
+              lineHeight: 1.7,
+            }}
+          />
+
+          {/* Selected File Preview */}
+          {selectedFile && (
+            <div
+              style={{
+                marginTop: 10,
+                padding: "10px 12px",
+                background: "#f8fafc",
+                border: "1px solid #e5e7eb",
+                borderRadius: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <span style={{ fontSize: 18 }}>📄</span>
+
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#111827",
+                  }}
+                >
+                  {selectedFile.name}
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6b7280",
+                  }}
+                >
+                  {(selectedFile.size / 1024).toFixed(2)} KB
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSelectedFile(null)}
+                style={{
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  color: "#ef4444",
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                ✕
+              </button>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, background: subject.light, border: `1.5px solid ${accent}22`, borderRadius: 9, padding: "6px 12px", fontSize: 12.5, fontWeight: 600, color: accent }}>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 8,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
+              <button
+                title="Attach"
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  background: "#f2eeeea0",
+                  border: "1.5px solid #e1e6eb",
+                  cursor: "pointer",
+                  color: "#000",
+                  fontSize: 20,
+                  borderRadius: 8,
+                  padding: "6px 10px",
+                }}
+              >
+                📎
+              </button>
+
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#1a0303",
+                }}
+              >
+                ⌘+Enter
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: subject.light,
+                  border: `1.5px solid ${accent}22`,
+                  borderRadius: 9,
+                  padding: "6px 12px",
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  color: accent,
+                }}
+              >
                 {subject.emoji} {subject.tabs[activeTab]}
               </div>
+
               {credits <= 10 && credits > 0 && (
-                <div style={{ fontSize: 11.5, color: "#d97706", fontWeight: 600, background: "#fef3c7", border: "1px solid #fde68a", borderRadius: 8, padding: "4px 8px" }}>
+                <div
+                  style={{
+                    fontSize: 11.5,
+                    color: "#d97706",
+                    fontWeight: 600,
+                    background: "#fef3c7",
+                    border: "1px solid #fde68a",
+                    borderRadius: 8,
+                    padding: "4px 8px",
+                  }}
+                >
                   ⚡ {credits} left
                 </div>
               )}
+
               <button
                 className="send"
-                onClick={credits <= 0 ? () => setShowNoCredits(true) : handleSolve}
-                disabled={loading || !inputValue.trim()}
-                title={
+                onClick={
                   credits <= 0
-                    ? "No credits left"
-                    : "Send (⌘+Enter)"
+                    ? () => setShowNoCredits(true)
+                    : handleSolve
                 }
+                disabled={loading || !inputValue.trim()}
                 style={{
                   background:
                     credits <= 0
@@ -1019,8 +1210,10 @@ export default function ChatPage() {
                       : inputValue.trim() && !loading
                         ? "#fff"
                         : "#d1d5db",
-                  opacity: loading || !inputValue.trim() ? 0.6 : 1,
-                  cursor: credits <= 0 ? "not-allowed" : "pointer",
+                  opacity:
+                    loading || !inputValue.trim() ? 0.6 : 1,
+                  cursor:
+                    credits <= 0 ? "not-allowed" : "pointer",
                 }}
               >
                 {loading ? "⏳" : credits <= 0 ? "🚫" : "↑"}
@@ -1028,7 +1221,6 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
-
         {/* Error Message */}
         {error && (
           <div style={{ width: "100%", maxWidth: 860, background: "#FEE2E2", border: "1.5px solid #FCA5A5", borderRadius: 12, padding: "14px 18px", color: "#DC2626", fontSize: 14, fontWeight: 500, marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
@@ -1177,131 +1369,131 @@ export default function ChatPage() {
         )}
       </main>
 
-     {/* Right Panel - Quiz & Follow-up */}
-{(answer || currentQuestion) && !loading && (
-  <aside
-    style={{
-      width: 360,
-      background: "rgba(15,23,42,0.75)",
-      backdropFilter: "blur(25px)",
-      borderLeft: "1px solid rgba(255, 255, 255, 0.98)",
-      display: "flex",
-      flexDirection: "column",
-      minHeight: "100vh",
-      flexShrink: 0,
-      position: "sticky",
-      top: 0,
-      maxHeight: "100vh",
-      overflowY: "auto",
-      boxShadow: "-10px 0 40px rgba(0,0,0,0.15)",
-    }}
-  >
-    {/* Header */}
-    <div
-      style={{
-        padding: "24px 20px 16px",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-      }}
-    >
-      <h3
-        style={{
-          fontSize: 20,
-          fontWeight: 800,
-          color: "#fff",
-          marginBottom: 6,
-        }}
-      >
-        Learning Assistant
-      </h3>
-
-      <p
-        style={{
-          fontSize: 13,
-          color: "#94a3b8",
-        }}
-      >
-        Quiz, follow-ups and smart insights
-      </p>
-    </div>
-
-    {/* Tabs */}
-    <div
-      style={{
-        display: "flex",
-        gap: 10,
-        padding: "16px",
-      }}
-    >
-      {["Follow-up", "Quiz"].map((t) => (
-        <button
-          key={t}
-          onClick={() => {
-            setActivePanel(t);
-
-            if (t === "Quiz") {
-              setQuizAnswers({});
-              setQuizScore(null);
-            }
-          }}
+      {/* Right Panel - Quiz & Follow-up */}
+      {(answer || currentQuestion) && !loading && (
+        <aside
           style={{
-            flex: 1,
-            border: "none",
-            cursor: "pointer",
-            borderRadius: 12,
-            padding: "12px 18px",
-            fontFamily: "'DM Sans',sans-serif",
-            fontWeight: activePanel === t ? 700 : 600,
-            fontSize: 13,
-            color: activePanel === t ? "#fff" : "#94a3b8",
-            background:
-              activePanel === t
-                ? `linear-gradient(135deg, ${accent}, #6366f1)`
-                : "rgba(255, 255, 255, 0.95)",
-            boxShadow:
-              activePanel === t
-                ? "0 10px 25px rgba(99,102,241,0.35)"
-                : "none",
-            transition: "all .3s ease",
+            width: 360,
+            background: "rgba(15,23,42,0.75)",
+            backdropFilter: "blur(25px)",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.98)",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100vh",
+            flexShrink: 0,
+            position: "sticky",
+            top: 0,
+            maxHeight: "100vh",
+            overflowY: "auto",
+            boxShadow: "-10px 0 40px rgba(0,0,0,0.15)",
           }}
         >
-          {t}
-        </button>
-      ))}
-    </div>
+          {/* Header */}
+          <div
+            style={{
+              padding: "24px 20px 16px",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: "#fff",
+                marginBottom: 6,
+              }}
+            >
+              Learning Assistant
+            </h3>
 
-    {/* Content */}
-    <div
-      style={{
-        flex: 1,
-        padding: "18px 14px",
-        overflowY: "auto",
-      }}
-    >
-      {activePanel === "Follow-up" && (
-        <FollowUpPanel
-          questions={followUpQuestions}
-          accent={accent}
-          onSelect={(q) => setInputValue(q)}
-        />
-      )}
+            <p
+              style={{
+                fontSize: 13,
+                color: "#94a3b8",
+              }}
+            >
+              Quiz, follow-ups and smart insights
+            </p>
+          </div>
 
-      {activePanel === "Quiz" && (
-        <QuizPanel
-          quiz={quizData}
-          answers={quizAnswers}
-          score={quizScore}
-          accent={accent}
-          onAnswer={handleQuizAnswer}
-          onSubmit={submitQuiz}
-          onRetake={() => {
-            setQuizScore(null);
-            setQuizAnswers({});
-          }}
-        />
+          {/* Tabs */}
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              padding: "16px",
+            }}
+          >
+            {["Follow-up", "Quiz"].map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  setActivePanel(t);
+
+                  if (t === "Quiz") {
+                    setQuizAnswers({});
+                    setQuizScore(null);
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: 12,
+                  padding: "12px 18px",
+                  fontFamily: "'DM Sans',sans-serif",
+                  fontWeight: activePanel === t ? 700 : 600,
+                  fontSize: 13,
+                  color: activePanel === t ? "#fff" : "#94a3b8",
+                  background:
+                    activePanel === t
+                      ? `linear-gradient(135deg, ${accent}, #6366f1)`
+                      : "rgba(255, 255, 255, 0.95)",
+                  boxShadow:
+                    activePanel === t
+                      ? "0 10px 25px rgba(99,102,241,0.35)"
+                      : "none",
+                  transition: "all .3s ease",
+                }}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div
+            style={{
+              flex: 1,
+              padding: "18px 14px",
+              overflowY: "auto",
+            }}
+          >
+            {activePanel === "Follow-up" && (
+              <FollowUpPanel
+                questions={followUpQuestions}
+                accent={accent}
+                onSelect={(q) => setInputValue(q)}
+              />
+            )}
+
+            {activePanel === "Quiz" && (
+              <QuizPanel
+                quiz={quizData}
+                answers={quizAnswers}
+                score={quizScore}
+                accent={accent}
+                onAnswer={handleQuizAnswer}
+                onSubmit={submitQuiz}
+                onRetake={() => {
+                  setQuizScore(null);
+                  setQuizAnswers({});
+                }}
+              />
+            )}
+          </div>
+        </aside>
       )}
-    </div>
-  </aside>
-)}
 
       {showNoCredits && (<div
         style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, backdropFilter: "blur(4px)" }} onClick={() => setShowNoCredits(false)}>
