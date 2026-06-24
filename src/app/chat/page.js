@@ -1301,7 +1301,7 @@ ${fileContent}
             </h2>
             <div
               style={{
-                display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20,
+                display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20,
               }}
             >
 
