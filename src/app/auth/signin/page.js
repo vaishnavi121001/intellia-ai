@@ -75,9 +75,8 @@ export default function SignInPage() {
   return (
     <div
       style={{
-        width: "100%",
-overflowY: "auto",
-padding: "20px",
+        minHeight: "100vh",
+        width: "100vw",
         background: "#7c7c8b",
         backgroundImage: `
           radial-gradient(circle at 10% 20%, rgba(130, 128, 160, 0.14) 0%, transparent 45%),
@@ -155,13 +154,6 @@ padding: "20px",
           background: rgba(255, 255, 255, 0.05);
           border-color: ${currentSubject.color}40;
         }
-          @media (max-width: 768px) {
-  .glass-panel-main {
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
       `}} />
 
       {/* Cybernetic Particle Mesh Nodes */}
@@ -179,17 +171,15 @@ padding: "20px",
           maxWidth: "1160px",
           borderRadius: "32px",
           display: "flex",
-          flexWrap: "wrap",
-          minHeight: "auto",
-overflow: "visible",
+          flexDirection: "row",
+          overflow: "hidden",
           zIndex: 2,
         }}
       >
         {/* LEFT CANVAS LAYOUT: Multidisciplinary 3D Hub Projection */}
         <div
           style={{
-            flex: "1 1 500px",
-padding: "clamp(24px,4vw,50px)",
+            flex: 1.25,
             
 background: "rgba(18, 23, 24, 0.4)",
             padding: "50px",
@@ -333,8 +323,8 @@ background: "rgba(18, 23, 24, 0.4)",
         {/* RIGHT CANVAS LAYOUT: Gateway Form Entry Access Box */}
         <div
           style={{
-          flex: "1 1 400px",
-padding: "clamp(24px,4vw,50px)",
+            flex: 1,
+            padding: "50px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
