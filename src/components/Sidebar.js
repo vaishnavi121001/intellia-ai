@@ -36,14 +36,22 @@ export default function Sidebar({
   return sidebarOpen ? (
     <aside
       style={{
-        width: 280,
+        width:
+  typeof window !== "undefined" && window.innerWidth <= 768
+    ? "100%"
+    : 280,
         borderRight: "1px solid #e5e7eb",
         display: "flex",
         flexDirection: "column",
         background: "#d8eaf6",
-        minHeight: "100vh",
+       minHeight:
+  typeof window !== "undefined" && window.innerWidth <= 768
+    ? "auto"
+    : "100vh",
         flexShrink: 0,
         boxShadow: "0 1px 3px rgba(0,0,0,.05)",
+        maxWidth: "100%",
+overflowY: "auto"
       }}
     >
       {/* Logo */}
