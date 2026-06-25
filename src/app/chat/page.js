@@ -840,7 +840,80 @@ ${fileContent}
         .send:active { transform: scale(.92); }
         .hero-word { display: inline-block; transition: opacity .32s ease, transform .32s ease; }
         .hero-word.out { opacity: 0; transform: translateY(14px); }
-      `}</style>
+      @media (max-width:768px){
+
+main{
+padding:16px !important;
+}
+
+.answer-wrap{
+padding:18px !important;
+}
+
+.send{
+width:42px;
+height:42px;
+}
+/* ===========================
+   Responsive Layout
+=========================== */
+
+@media (max-width: 1024px) {
+
+  main{
+    padding:24px !important;
+  }
+
+  aside{
+    width:100% !important;
+    max-width:100% !important;
+    position:relative !important;
+    min-height:auto !important;
+    max-height:none !important;
+    top:auto !important;
+    border-left:none !important;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+
+}
+
+@media (max-width:768px){
+
+  main{
+    padding:16px !important;
+    width:100% !important;
+  }
+
+  textarea{
+    font-size:16px !important;
+  }
+
+  .answer-wrap{
+    padding:18px !important;
+    border-radius:18px !important;
+  }
+
+  .send{
+    width:44px !important;
+    height:44px !important;
+  }
+
+}
+
+@media (max-width:600px){
+
+  h1{
+    font-size:32px !important;
+  }
+
+  p{
+    font-size:14px !important;
+  }
+
+}
+}`
+
+     } </style>
 
       {/* Sidebar */}
       <Sidebar
@@ -863,8 +936,17 @@ ${fileContent}
       />
 
       {/* Main */}
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 32px 64px", overflowY: "auto" }}>
-        {!sidebarOpen && (
+<main
+  style={{
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "clamp(16px,4vw,48px)",
+    overflowY: "auto",
+    width: "100%",
+  }}
+>        {!sidebarOpen && (
           <button onClick={() => setSidebarOpen(true)} style={{
             position: "fixed", left: 16, top: 16, background: "rgba(255,255,255,0.1)",
             backdropFilter: "blur(12px)",
@@ -878,7 +960,7 @@ ${fileContent}
           <div
             style={{
               textAlign: "center",
-              marginBottom: 50,
+              marginBottom: 30,
               position: "relative",
               padding: "30px 20px",
             }}
@@ -1005,9 +1087,10 @@ ${fileContent}
         <div
           style={{
             width: "100%",
-            maxWidth: 860,
+            maxWidth: "100%",
+padding: "16px",
             borderRadius: 18,
-            padding: "20px 24px",
+            
             background: "rgb(236, 225, 225)",
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.12)",
@@ -1244,7 +1327,13 @@ ${fileContent}
 
         {/* Answer */}
         {answer && !loading && (
-          <div style={{ width: "100%", maxWidth: 860 }}>
+          <div
+  style={{
+    width: "100%",
+    maxWidth: 860,
+    overflowX: "auto",
+  }}
+>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingLeft: 4 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg,${accent},#6366f1)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 800 }}>ia</div>
               <span style={{ fontWeight: 600, fontSize: 15, color: "#111" }}>
@@ -1301,7 +1390,7 @@ ${fileContent}
             </h2>
             <div
               style={{
-                display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20,
+                display: "grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap: 20,
               }}
             >
 
@@ -1373,7 +1462,8 @@ ${fileContent}
       {(answer || currentQuestion) && !loading && (
         <aside
           style={{
-            width: 360,
+            width: "100%",
+maxWidth: 360,
             background: "rgba(15,23,42,0.75)",
             backdropFilter: "blur(25px)",
             borderLeft: "1px solid rgba(255, 255, 255, 0.98)",
