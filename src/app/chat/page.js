@@ -226,7 +226,13 @@ export default function ChatPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [activePanel, setActivePanel] = useState("Follow-up");
   const [inputValue, setInputValue] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+ const [sidebarOpen, setSidebarOpen] = useState(false);
+
+useEffect(() => {
+    if (window.innerWidth > 768) {
+        setSidebarOpen(true);
+    }
+}, []);
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
   const [answerLabel, setAnswerLabel] = useState("");
@@ -246,7 +252,7 @@ export default function ChatPage() {
   const [creditsResetAt, setCreditsResetAt] = useState(null);
   const [showNoCredits, setShowNoCredits] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
-
+const [mobilePanel, setMobilePanel] = useState(null);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const cycleRef = useRef(null);
@@ -776,18 +782,22 @@ ${fileContent}
   const accent = subject.color;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#4a5263",
-        backgroundImage: `
-      radial-gradient(circle at 10% 20%, rgb(121, 121, 151) 0%, transparent 45%),
-      radial-gradient(circle at 90% 80%, rgb(95, 151, 161) 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, rgb(103, 133, 158) 0%, transparent 50%)
+<div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    minHeight: "100vh",
+    width: "100%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    background: "#4a5263",
+    backgroundImage: `
+      radial-gradient(circle at 10% 20%, rgb(121,121,151) 0%, transparent 45%),
+      radial-gradient(circle at 90% 80%, rgb(95,151,161) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgb(103,133,158) 0%, transparent 50%)
     `,
-      }}
-    >      <style>{`
+  }}
+>      <style>{`
         * { box-sizing: border-box; margin: 0; }
         body {
   font-family: 'DM Sans', sans-serif;
@@ -937,16 +947,20 @@ height:42px;
 
       {/* Main */}
 <main
-  style={{
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "clamp(16px,4vw,48px)",
-    overflowY: "auto",
-    width: "100%",
-  }}
->        {!sidebarOpen && (
+style={{
+flex:1,
+width:"100%",
+display:"flex",
+flexDirection:"column",
+alignItems:"center",
+padding:"clamp(16px,4vw,48px)",
+overflowY:"auto",
+overflowX:"hidden",
+minHeight:"100vh",
+WebkitOverflowScrolling:"touch"
+}}
+>
+        {!sidebarOpen && (
           <button onClick={() => setSidebarOpen(true)} style={{
             position: "fixed", left: 16, top: 16, background: "rgba(255,255,255,0.1)",
             backdropFilter: "blur(12px)",
@@ -1086,8 +1100,8 @@ height:42px;
         {/* Input Box */}
         <div
           style={{
-            width: "100%",
-            maxWidth: "100%",
+           maxWidth:860,
+width:"100%",
 padding: "16px",
             borderRadius: 18,
             
@@ -1304,6 +1318,52 @@ padding: "16px",
             </div>
           </div>
         </div>
+
+        {answer && (
+  <div
+    className="mobile-tools"
+    style={{
+      display:
+        typeof window !== "undefined" && window.innerWidth <= 768
+          ? "flex"
+          : "none",
+      gap: 10,
+      width: "100%",
+      maxWidth: 860,
+      margin: "15px 0",
+    }}
+  >
+    <button
+      onClick={() => setMobilePanel("follow")}
+      style={{
+        flex: 1,
+        padding: "12px",
+        borderRadius: 10,
+        border: "none",
+        background: "#4F46E5",
+        color: "#fff",
+        fontWeight: 600,
+      }}
+    >
+      📖 Follow-up
+    </button>
+
+    <button
+      onClick={() => setMobilePanel("quiz")}
+      style={{
+        flex: 1,
+        padding: "12px",
+        borderRadius: 10,
+        border: "none",
+        background: "#059669",
+        color: "#fff",
+        fontWeight: 600,
+      }}
+    >
+      📝 Quiz
+    </button>
+  </div>
+)}
         {/* Error Message */}
         {error && (
           <div style={{ width: "100%", maxWidth: 860, background: "#FEE2E2", border: "1.5px solid #FCA5A5", borderRadius: 12, padding: "14px 18px", color: "#DC2626", fontSize: 14, fontWeight: 500, marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
@@ -1327,12 +1387,12 @@ padding: "16px",
 
         {/* Answer */}
         {answer && !loading && (
-          <div
-  style={{
-    width: "100%",
-    maxWidth: 860,
-    overflowX: "auto",
-  }}
+<div
+style={{
+width:"100%",
+maxWidth:860,
+overflowX:"hidden"
+}}
 >
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingLeft: 4 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg,${accent},#6366f1)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 800 }}>ia</div>
@@ -1456,28 +1516,76 @@ padding: "16px",
             </div>
           </div>
         )}
+        {mobilePanel === "follow" && (
+    <FollowUpPanel
+        questions={followUpQuestions}
+        accent={accent}
+        onSelect={(q)=>setInputValue(q)}
+    />
+)}
+
+{mobilePanel === "quiz" && (
+    <QuizPanel
+        quiz={quizData}
+        answers={quizAnswers}
+        score={quizScore}
+        accent={accent}
+        onAnswer={handleQuizAnswer}
+        onSubmit={submitQuiz}
+        onRetake={()=>{
+            setQuizScore(null);
+            setQuizAnswers({});
+        }}
+    />
+)}
       </main>
 
       {/* Right Panel - Quiz & Follow-up */}
-      {(answer || currentQuestion) && !loading && (
-        <aside
-          style={{
-            width: "100%",
-maxWidth: 360,
-            background: "rgba(15,23,42,0.75)",
-            backdropFilter: "blur(25px)",
-            borderLeft: "1px solid rgba(255, 255, 255, 0.98)",
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-            flexShrink: 0,
-            position: "sticky",
-            top: 0,
-            maxHeight: "100vh",
-            overflowY: "auto",
-            boxShadow: "-10px 0 40px rgba(0,0,0,0.15)",
-          }}
-        >
+      {(answer || currentQuestion) &&
+ !loading &&
+ typeof window !== "undefined" &&
+ window.innerWidth > 768 && (
+<aside
+style={{
+width:
+typeof window !== "undefined" &&
+window.innerWidth <= 768
+? "100%"
+: 360,
+
+maxWidth:"100%",
+
+background:"rgba(15,23,42,.75)",
+
+backdropFilter:"blur(25px)",
+
+display:"flex",
+
+flexDirection:"column",
+
+borderLeft:
+typeof window !== "undefined" &&
+window.innerWidth <= 768
+? "none"
+: "1px solid rgba(255,255,255,.1)",
+
+borderTop:
+typeof window !== "undefined" &&
+window.innerWidth <= 768
+? "1px solid rgba(255,255,255,.1)"
+: "none",
+
+position:"relative",
+
+minHeight:"auto",
+
+maxHeight:"none",
+
+overflowY:"visible",
+
+flexShrink:0
+}}
+>
           {/* Header */}
           <div
             style={{
