@@ -226,13 +226,13 @@ export default function ChatPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [activePanel, setActivePanel] = useState("Follow-up");
   const [inputValue, setInputValue] = useState("");
- const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-useEffect(() => {
+  useEffect(() => {
     if (window.innerWidth > 768) {
-        setSidebarOpen(true);
+      setSidebarOpen(true);
     }
-}, []);
+  }, []);
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
   const [answerLabel, setAnswerLabel] = useState("");
@@ -252,7 +252,7 @@ useEffect(() => {
   const [creditsResetAt, setCreditsResetAt] = useState(null);
   const [showNoCredits, setShowNoCredits] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
-const [mobilePanel, setMobilePanel] = useState(null);
+  const [mobilePanel, setMobilePanel] = useState(null);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const cycleRef = useRef(null);
@@ -782,22 +782,22 @@ ${fileContent}
   const accent = subject.color;
 
   return (
-<div
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    minHeight: "100vh",
-    width: "100%",
-    overflowX: "hidden",
-    overflowY: "auto",
-    background: "#4a5263",
-    backgroundImage: `
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        minHeight: "100vh",
+        width: "100%",
+        overflowX: "hidden",
+        overflowY: "auto",
+        background: "#4a5263",
+        backgroundImage: `
       radial-gradient(circle at 10% 20%, rgb(121,121,151) 0%, transparent 45%),
       radial-gradient(circle at 90% 80%, rgb(95,151,161) 0%, transparent 45%),
       radial-gradient(circle at 50% 50%, rgb(103,133,158) 0%, transparent 50%)
     `,
-  }}
->      <style>{`
+      }}
+    >      <style>{`
         * { box-sizing: border-box; margin: 0; }
         body {
   font-family: 'DM Sans', sans-serif;
@@ -923,7 +923,7 @@ height:42px;
 }
 }`
 
-     } </style>
+    } </style>
 
       {/* Sidebar */}
       <Sidebar
@@ -946,20 +946,20 @@ height:42px;
       />
 
       {/* Main */}
-<main
-style={{
-flex:1,
-width:"100%",
-display:"flex",
-flexDirection:"column",
-alignItems:"center",
-padding:"clamp(16px,4vw,48px)",
-overflowY:"auto",
-overflowX:"hidden",
-minHeight:"100vh",
-WebkitOverflowScrolling:"touch"
-}}
->
+      <main
+        style={{
+          flex: 1,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "clamp(16px,4vw,48px)",
+          overflowY: "auto",
+          overflowX: "hidden",
+          minHeight: "100vh",
+          WebkitOverflowScrolling: "touch"
+        }}
+      >
         {!sidebarOpen && (
           <button onClick={() => setSidebarOpen(true)} style={{
             position: "fixed", left: 16, top: 16, background: "rgba(255,255,255,0.1)",
@@ -1100,11 +1100,11 @@ WebkitOverflowScrolling:"touch"
         {/* Input Box */}
         <div
           style={{
-           maxWidth:860,
-width:"100%",
-padding: "16px",
+            maxWidth: 860,
+            width: "100%",
+            padding: "16px",
             borderRadius: 18,
-            
+
             background: "rgb(236, 225, 225)",
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.12)",
@@ -1320,50 +1320,50 @@ padding: "16px",
         </div>
 
         {answer && (
-  <div
-    className="mobile-tools"
-    style={{
-      display:
-        typeof window !== "undefined" && window.innerWidth <= 768
-          ? "flex"
-          : "none",
-      gap: 10,
-      width: "100%",
-      maxWidth: 860,
-      margin: "15px 0",
-    }}
-  >
-    <button
-      onClick={() => setMobilePanel("follow")}
-      style={{
-        flex: 1,
-        padding: "12px",
-        borderRadius: 10,
-        border: "none",
-        background: "#4F46E5",
-        color: "#fff",
-        fontWeight: 600,
-      }}
-    >
-      📖 Follow-up
-    </button>
+          <div
+            className="mobile-tools"
+            style={{
+              display:
+                typeof window !== "undefined" && window.innerWidth <= 768
+                  ? "flex"
+                  : "none",
+              gap: 10,
+              width: "100%",
+              maxWidth: 860,
+              margin: "15px 0",
+            }}
+          >
+            <button
+              onClick={() => setMobilePanel("follow")}
+              style={{
+                flex: 1,
+                padding: "12px",
+                borderRadius: 10,
+                border: "none",
+                background: "#4F46E5",
+                color: "#fff",
+                fontWeight: 600,
+              }}
+            >
+              📖 Follow-up
+            </button>
 
-    <button
-      onClick={() => setMobilePanel("quiz")}
-      style={{
-        flex: 1,
-        padding: "12px",
-        borderRadius: 10,
-        border: "none",
-        background: "#059669",
-        color: "#fff",
-        fontWeight: 600,
-      }}
-    >
-      📝 Quiz
-    </button>
-  </div>
-)}
+            <button
+              onClick={() => setMobilePanel("quiz")}
+              style={{
+                flex: 1,
+                padding: "12px",
+                borderRadius: 10,
+                border: "none",
+                background: "#059669",
+                color: "#fff",
+                fontWeight: 600,
+              }}
+            >
+              📝 Quiz
+            </button>
+          </div>
+        )}
         {/* Error Message */}
         {error && (
           <div style={{ width: "100%", maxWidth: 860, background: "#FEE2E2", border: "1.5px solid #FCA5A5", borderRadius: 12, padding: "14px 18px", color: "#DC2626", fontSize: 14, fontWeight: 500, marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
@@ -1387,13 +1387,13 @@ padding: "16px",
 
         {/* Answer */}
         {answer && !loading && (
-<div
-style={{
-width:"100%",
-maxWidth:860,
-overflowX:"hidden"
-}}
->
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 860,
+              overflowX: "hidden"
+            }}
+          >
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingLeft: 4 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg,${accent},#6366f1)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 800 }}>ia</div>
               <span style={{ fontWeight: 600, fontSize: 15, color: "#111" }}>
@@ -1434,264 +1434,306 @@ overflowX:"hidden"
           </div>
         )}
 
-        {/* Demo Cards */}
-        {!answer && !loading && !error && (
-          <div style={{ width: "100%", maxWidth: 860, marginTop: 40 }}>
-            <h2
-              style={{
-                fontSize: 28,
-                fontWeight: 900,
-                color: accent,
-                marginBottom: 24,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              Explore Learning Modules
-            </h2>
-            <div
-              style={{
-                display: "grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap: 20,
-              }}
-            >
+       {/* Demo Cards */}
+{!answer && !loading && !error && (
+  <div style={{ width: "100%", maxWidth: 860, marginTop: 40 }}>
+    <h2
+      style={{
+        fontSize: 28,
+        fontWeight: 900,
+        color: accent,
+        marginBottom: 24,
+        letterSpacing: "-0.5px",
+      }}
+    >
+      Explore Learning Modules
+    </h2>
 
-              {subject.demos.map((card, i) => (
-                <div
-                  key={i}
-                  onClick={() => handleDemo(card)}
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: "24px",
-                    overflow: "hidden",
-                    background: "rgb(240, 231, 231)",
-                    backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
-                    transition: "all 0.45s ease",
-                    position: "relative",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform =
-                      "perspective(1000px) rotateX(8deg) rotateY(-8deg) translateY(-12px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 35px 80px rgba(99,102,241,0.25)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "none";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 50px rgba(0,0,0,0.15)";
-                  }}
-                >
-                  <div
-                    style={{
-                      height: 140,
-                      background: `radial-gradient(circle, ${accent}22 0%, transparent 70%)`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 64,
-                    }}
-                  >
-                    {card.icon}
-                  </div>
-                  <div>
-                    <p style={{ fontWeight: 700, fontSize: 15, color: "#111", marginBottom: 6, lineHeight: 1.4 }}>{card.title}</p>
-                    <p style={{ fontSize: 13.5, color: "#6b7280", marginBottom: 14, lineHeight: 1.5 }}>{card.desc}</p>
-                    <button
-                      style={{
-                        background:
-                          "linear-gradient(135deg,#4f46e5,#7c3aed,#06b6d4)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 12,
-                        
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        boxShadow: "0 10px 25px rgba(79,70,229,.35)",
-                      }}
-                    >
-                      ✨ Explore
-                    </button>                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {mobilePanel === "follow" && (
-    <FollowUpPanel
-        questions={followUpQuestions}
-        accent={accent}
-        onSelect={(q)=>setInputValue(q)}
-    />
-)}
-
-{mobilePanel === "quiz" && (
-    <QuizPanel
-        quiz={quizData}
-        answers={quizAnswers}
-        score={quizScore}
-        accent={accent}
-        onAnswer={handleQuizAnswer}
-        onSubmit={submitQuiz}
-        onRetake={()=>{
-            setQuizScore(null);
-            setQuizAnswers({});
-        }}
-    />
-)}
-      </main>
-
-      {/* Right Panel - Quiz & Follow-up */}
-      {(answer || currentQuestion) &&
- !loading &&
- typeof window !== "undefined" &&
- window.innerWidth > 768 && (
-<aside
-style={{
-width:
-typeof window !== "undefined" &&
-window.innerWidth <= 768
-? "100%"
-: 360,
-
-maxWidth:"100%",
-
-background:"rgba(15,23,42,.75)",
-
-backdropFilter:"blur(25px)",
-
-display:"flex",
-
-flexDirection:"column",
-
-borderLeft:
-typeof window !== "undefined" &&
-window.innerWidth <= 768
-? "none"
-: "1px solid rgba(255,255,255,.1)",
-
-borderTop:
-typeof window !== "undefined" &&
-window.innerWidth <= 768
-? "1px solid rgba(255,255,255,.1)"
-: "none",
-
-position:"relative",
-
-minHeight:"auto",
-
-maxHeight:"none",
-
-overflowY:"visible",
-
-flexShrink:0
-}}
->
-          {/* Header */}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+        gap: 20,
+      }}
+    >
+      {subject.demos.map((card, i) => (
+        <div
+          key={i}
+          onClick={() => handleDemo(card)}
+          style={{
+            cursor: "pointer",
+            borderRadius: "24px",
+            overflow: "hidden",
+            background: "rgb(240, 231, 231)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+            transition: "all 0.45s ease",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 370,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform =
+              "perspective(1000px) rotateX(8deg) rotateY(-8deg) translateY(-12px)";
+            e.currentTarget.style.boxShadow =
+              "0 35px 80px rgba(99,102,241,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "none";
+            e.currentTarget.style.boxShadow =
+              "0 20px 50px rgba(0,0,0,0.15)";
+          }}
+        >
+          {/* Icon */}
           <div
             style={{
-              padding: "24px 20px 16px",
-              borderBottom: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: 20,
-                fontWeight: 800,
-                color: "#fff",
-                marginBottom: 6,
-              }}
-            >
-              Learning Assistant
-            </h3>
-
-            <p
-              style={{
-                fontSize: 13,
-                color: "#94a3b8",
-              }}
-            >
-              Quiz, follow-ups and smart insights
-            </p>
-          </div>
-
-          {/* Tabs */}
-          <div
-            style={{
+              height: 140,
+              background: `radial-gradient(circle, ${accent}22 0%, transparent 70%)`,
               display: "flex",
-              gap: 10,
-              padding: "16px",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 64,
+              flexShrink: 0,
             }}
           >
-            {["Follow-up", "Quiz"].map((t) => (
-              <button
-                key={t}
-                onClick={() => {
-                  setActivePanel(t);
-
-                  if (t === "Quiz") {
-                    setQuizAnswers({});
-                    setQuizScore(null);
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: 12,
-                  padding: "12px 18px",
-                  fontFamily: "'DM Sans',sans-serif",
-                  fontWeight: activePanel === t ? 700 : 600,
-                  fontSize: 13,
-                  color: activePanel === t ? "#fff" : "#94a3b8",
-                  background:
-                    activePanel === t
-                      ? `linear-gradient(135deg, ${accent}, #6366f1)`
-                      : "rgba(255, 255, 255, 0.95)",
-                  boxShadow:
-                    activePanel === t
-                      ? "0 10px 25px rgba(99,102,241,0.35)"
-                      : "none",
-                  transition: "all .3s ease",
-                }}
-              >
-                {t}
-              </button>
-            ))}
+            {card.icon}
           </div>
 
           {/* Content */}
           <div
             style={{
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
               flex: 1,
-              padding: "18px 14px",
-              overflowY: "auto",
             }}
           >
-            {activePanel === "Follow-up" && (
-              <FollowUpPanel
-                questions={followUpQuestions}
-                accent={accent}
-                onSelect={(q) => setInputValue(q)}
-              />
-            )}
+            <p
+              style={{
+                fontWeight: 700,
+                fontSize: 17,
+                color: "#111",
+                marginBottom: 8,
+                lineHeight: 1.5,
+                wordBreak: "break-word",
+              }}
+            >
+              {card.title}
+            </p>
 
-            {activePanel === "Quiz" && (
-              <QuizPanel
-                quiz={quizData}
-                answers={quizAnswers}
-                score={quizScore}
-                accent={accent}
-                onAnswer={handleQuizAnswer}
-                onSubmit={submitQuiz}
-                onRetake={() => {
-                  setQuizScore(null);
-                  setQuizAnswers({});
-                }}
-              />
-            )}
+            <p
+              style={{
+                fontSize: 14,
+                color: "#6b7280",
+                lineHeight: 1.7,
+                wordBreak: "break-word",
+                flex: 1,
+                marginBottom: 20,
+              }}
+            >
+              {card.desc}
+            </p>
+
+            <button
+              style={{
+                padding: "12px 18px",
+                background:
+                  "linear-gradient(135deg,#4f46e5,#7c3aed,#06b6d4)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                width: "fit-content",
+                boxShadow: "0 10px 25px rgba(79,70,229,.35)",
+              }}
+            >
+              ✨ Explore
+            </button>
           </div>
-        </aside>
-      )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+        {mobilePanel === "follow" && (
+          <FollowUpPanel
+            questions={followUpQuestions}
+            accent={accent}
+            onSelect={(q) => setInputValue(q)}
+          />
+        )}
+
+        {mobilePanel === "quiz" && (
+          <QuizPanel
+            quiz={quizData}
+            answers={quizAnswers}
+            score={quizScore}
+            accent={accent}
+            onAnswer={handleQuizAnswer}
+            onSubmit={submitQuiz}
+            onRetake={() => {
+              setQuizScore(null);
+              setQuizAnswers({});
+            }}
+          />
+        )}
+      </main>
+
+      {/* Right Panel - Quiz & Follow-up */}
+      {(answer || currentQuestion) &&
+        !loading &&
+        typeof window !== "undefined" &&
+        window.innerWidth > 768 && (
+          <aside
+            style={{
+              width:
+                typeof window !== "undefined" &&
+                  window.innerWidth <= 768
+                  ? "100%"
+                  : 360,
+
+              maxWidth: "100%",
+
+              background: "rgba(15,23,42,.75)",
+
+              backdropFilter: "blur(25px)",
+
+              display: "flex",
+
+              flexDirection: "column",
+
+              borderLeft:
+                typeof window !== "undefined" &&
+                  window.innerWidth <= 768
+                  ? "none"
+                  : "1px solid rgba(255,255,255,.1)",
+
+              borderTop:
+                typeof window !== "undefined" &&
+                  window.innerWidth <= 768
+                  ? "1px solid rgba(255,255,255,.1)"
+                  : "none",
+
+              position: "relative",
+
+              minHeight: "auto",
+
+              maxHeight: "none",
+
+              overflowY: "visible",
+
+              flexShrink: 0
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: "24px 20px 16px",
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: 20,
+                  fontWeight: 800,
+                  color: "#fff",
+                  marginBottom: 6,
+                }}
+              >
+                Learning Assistant
+              </h3>
+
+              <p
+                style={{
+                  fontSize: 13,
+                  color: "#94a3b8",
+                }}
+              >
+                Quiz, follow-ups and smart insights
+              </p>
+            </div>
+
+            {/* Tabs */}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                padding: "16px",
+              }}
+            >
+              {["Follow-up", "Quiz"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => {
+                    setActivePanel(t);
+
+                    if (t === "Quiz") {
+                      setQuizAnswers({});
+                      setQuizScore(null);
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    border: "none",
+                    cursor: "pointer",
+                    borderRadius: 12,
+                    padding: "12px 18px",
+                    fontFamily: "'DM Sans',sans-serif",
+                    fontWeight: activePanel === t ? 700 : 600,
+                    fontSize: 13,
+                    color: activePanel === t ? "#fff" : "#94a3b8",
+                    background:
+                      activePanel === t
+                        ? `linear-gradient(135deg, ${accent}, #6366f1)`
+                        : "rgba(255, 255, 255, 0.95)",
+                    boxShadow:
+                      activePanel === t
+                        ? "0 10px 25px rgba(99,102,241,0.35)"
+                        : "none",
+                    transition: "all .3s ease",
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            {/* Content */}
+            <div
+              style={{
+                flex: 1,
+                padding: "18px 14px",
+                overflowY: "auto",
+              }}
+            >
+              {activePanel === "Follow-up" && (
+                <FollowUpPanel
+                  questions={followUpQuestions}
+                  accent={accent}
+                  onSelect={(q) => setInputValue(q)}
+                />
+              )}
+
+              {activePanel === "Quiz" && (
+                <QuizPanel
+                  quiz={quizData}
+                  answers={quizAnswers}
+                  score={quizScore}
+                  accent={accent}
+                  onAnswer={handleQuizAnswer}
+                  onSubmit={submitQuiz}
+                  onRetake={() => {
+                    setQuizScore(null);
+                    setQuizAnswers({});
+                  }}
+                />
+              )}
+            </div>
+          </aside>
+        )}
 
       {showNoCredits && (<div
         style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, backdropFilter: "blur(4px)" }} onClick={() => setShowNoCredits(false)}>
