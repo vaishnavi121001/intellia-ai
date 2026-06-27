@@ -136,14 +136,24 @@ export default function SignUpPage() {
     }
   };
 
- // ... (Keep the return block structure the same, just update these styles)
+ 
 
 return (
-    <div style={{ 
-      minHeight: "80vh", width: "100vw", background: "#030306",
-      backgroundImage: `radial-gradient(circle at 10% 20%, rgba(79, 70, 225, 0.14) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 45%)`,
-      display: "flex", alignItems: "center", justifyContent: "center", padding: "20px 10px" 
-    }}>
+    <div
+ style={{
+  minHeight: "100dvh",
+  width: "100%",
+  background: "#030306",
+  backgroundImage:
+    "radial-gradient(circle at 10% 20%, rgba(79, 70, 225, 0.14) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 45%)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "flex-start",
+  overflowY: "auto",
+  overflowX: "hidden",
+  padding: "20px 12px 40px",
+  boxSizing: "border-box",
+}}>
       
      <style dangerouslySetInnerHTML={{ __html: `
   .glass-panel-main { 
@@ -171,9 +181,53 @@ return (
     font-weight: 700; 
     cursor: pointer; 
   }
+    .signup-card{
+  width:100%;
+}
+
+.subjects-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.password-row{
+  display:flex;
+  gap:12px;
+}
+
+@media (max-width:768px){
+
+  .signup-card{
+    border-radius:20px !important;
+    padding:24px !important;
+  }
+
+  .subjects-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+  }
+
+  .password-row{
+    flex-direction:column !important;
+  }
+
+  .password-row input{
+    width:100% !important;
+  }
+}
 `}} />
 
-<div className="glass-panel-main" style={{ width: "100%", maxWidth: "600px", borderRadius: "32px", padding: "50px" }}>
+<div
+  className="glass-panel-main signup-card"
+  style={{
+    width: "100%",
+    maxWidth: "600px",
+    borderRadius: "32px",
+    padding: "clamp(20px,4vw,50px)",
+    margin: "auto 0",
+    boxSizing: "border-box",
+  }}
+>
   <div style={{ marginBottom: "30px", textAlign: "center" }}>
 
     <img 
@@ -183,7 +237,7 @@ return (
   style={{ 
     height: "45px", 
     marginBottom: "10px", 
-    display: "inline-block" // Animation ke liye block/inline-block zaruri hai
+    display: "inline-block" 
   }} 
 />
    

@@ -73,25 +73,31 @@ export default function SignInPage() {
   const currentSubject = subjects[activeSubjectIdx];
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100vw",
-        background: "#7c7c8b",
-        backgroundImage: `
-          radial-gradient(circle at 10% 20%, rgba(130, 128, 160, 0.14) 0%, transparent 45%),
-          radial-gradient(circle at 90% 80%, rgba(97, 132, 138, 0.74) 0%, transparent 45%),
-          radial-gradient(circle at 50% 50%, rgba(119, 95, 158, 0.05) 0%, transparent 50%)
-        `,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        
-        fontFamily: "'DM Sans', sans-serif",
-        overflowX: "hidden",
-        position: "relative",
-      }}
-    >
+  <div
+  style={{
+    minHeight: "100vh",
+    width: "100%",
+    
+    background: "#7c7c8b",
+    backgroundImage: `
+      radial-gradient(circle at 10% 20%, rgba(130, 128, 160, 0.14) 0%, transparent 45%),
+      radial-gradient(circle at 90% 80%, rgba(97, 132, 138, 0.74) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(119, 95, 158, 0.05) 0%, transparent 50%)
+    `,
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    fontFamily: "'DM Sans', sans-serif",
+
+    
+    overflowX: "hidden",
+    overflowY: "auto",
+    WebkitOverflowScrolling: "touch",
+    position: "relative",
+    
+    boxSizing: "border-box",
+  }}
+>
       {/* Dynamic Native Style Injection for Dashboard-accurate High Fidelity Graphics */}
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -154,6 +160,23 @@ export default function SignInPage() {
           background: rgba(255, 255, 255, 0.05);
           border-color: ${currentSubject.color}40;
         }
+          @media (max-width: 768px) {
+
+  .glass-panel-main{
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .glass-panel-main > div{
+    width: 100% !important;
+    flex: unset !important;
+    padding: 24px !important;
+    box-sizing: border-box;
+  }
+
+}
       `}} />
 
       {/* Cybernetic Particle Mesh Nodes */}
@@ -164,18 +187,18 @@ export default function SignInPage() {
       </div>
 
       {/* Main Structural Layout Box Frame */}
-      <div
-        className="glass-panel-main"
-        style={{
-          width: "100%",
-          maxWidth: "1160px",
-          borderRadius: "32px",
-          display: "flex",
-          flexDirection: "row",
-          overflow: "hidden",
-          zIndex: 2,
-        }}
-      >
+<div
+  className="glass-panel-main"
+  style={{
+    width: "100%",
+    maxWidth: "1160px",
+    borderRadius: "32px",
+    display: "flex",
+    flexDirection: "row",
+    overflow: "visible",
+    zIndex: 2,
+  }}
+>
         {/* LEFT CANVAS LAYOUT: Multidisciplinary 3D Hub Projection */}
         <div
           style={{
