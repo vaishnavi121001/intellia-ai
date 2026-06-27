@@ -151,7 +151,7 @@ return (
   alignItems: "flex-start",
   overflowY: "auto",
   overflowX: "hidden",
-  padding: "20px 12px 40px",
+  
   boxSizing: "border-box",
 }}>
       
