@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 export default function Sidebar({
   sidebarOpen,
@@ -19,13 +19,24 @@ export default function Sidebar({
   chatHistory,
   handleSelectChat,
   setChatHistory,
+  windowWidth, // ✅ FIX: passed from parent instead of reading window.innerWidth inline
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const moreRef = useRef(null);
 
+  const isMobile = windowWidth <= 768;
+
   const filteredHistory = chatHistory.filter((chat) =>
     chat.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // ✅ FIX: group chat history by date so chats are visually separated
+  const groupedHistory = filteredHistory.reduce((groups, chat) => {
+    const dateKey = new Date(chat.timestamp).toLocaleDateString();
+    if (!groups[dateKey]) groups[dateKey] = [];
+    groups[dateKey].push(chat);
+    return groups;
+  }, {});
 
   const deleteChat = (chatId) => {
     const updated = chatHistory.filter((chat) => chat.id !== chatId);
@@ -36,22 +47,16 @@ export default function Sidebar({
   return sidebarOpen ? (
     <aside
       style={{
-        width:
-  typeof window !== "undefined" && window.innerWidth <= 768
-    ? "100%"
-    : 280,
+        width: isMobile ? "100%" : 280,
         borderRight: "1px solid #e5e7eb",
         display: "flex",
         flexDirection: "column",
         background: "#d8eaf6",
-       minHeight:
-  typeof window !== "undefined" && window.innerWidth <= 768
-    ? "auto"
-    : "100vh",
+        minHeight: isMobile ? "auto" : "100vh",
         flexShrink: 0,
         boxShadow: "0 1px 3px rgba(0,0,0,.05)",
         maxWidth: "100%",
-overflowY: "auto"
+        overflowY: "auto"
       }}
     >
       {/* Logo */}
@@ -167,67 +172,85 @@ overflowY: "auto"
           }}
         />
 
-        {/* History list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {filteredHistory.length === 0 ? (
+        {/* History list - grouped by date */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {Object.keys(groupedHistory).length === 0 ? (
             <div style={{ fontSize: 12, color: "#9ca3af", padding: "16px 8px", textAlign: "center" }}>
               No chats yet. Start a new conversation!
             </div>
           ) : (
-            filteredHistory.map((chat) => (
-              <div
-                key={chat.id}
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 10,
-                  padding: "10px 12px",
-                  background: "#f9fafb",
-                  borderRadius: 10,
-                  cursor: "pointer",
-                  transition: "all .15s",
-                  borderLeft: `3px solid ${accent}`,
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#f3f4f6"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#f9fafb"; }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }} onClick={() => handleSelectChat(chat)}>
-                  <div style={{
-                    fontSize: 12, fontWeight: 600, color: "#111",
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 4,
-                  }}>
-                    {chat.title}
-                  </div>
-                  <div style={{
-                    fontSize: 11, color: "#9ca3af",
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  }}>
-                    {chat.subject}
-                  </div>
-                  <div style={{ fontSize: 10, color: "#d1d5db", marginTop: 4 }}>
-                    {new Date(chat.timestamp).toLocaleDateString()}
-                  </div>
-                </div>
-
-                {/* Delete button */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
+            Object.entries(groupedHistory).map(([date, chats]) => (
+              <div key={date} style={{ marginBottom: 10 }}>
+                <div
                   style={{
-                    background: "none", border: "none", cursor: "pointer",
-                    color: "#d1d5db", fontSize: 14, padding: "4px 8px",
-                    borderRadius: 6, transition: "all .15s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#ef4444";
-                    e.currentTarget.style.background = "#fee2e2";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "#d1d5db";
-                    e.currentTarget.style.background = "none";
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: "#6b8aa3",
+                    letterSpacing: ".04em",
+                    margin: "10px 0 6px 6px",
+                    textTransform: "uppercase",
                   }}
                 >
-                  🗑️
-                </button>
+                  {date}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {chats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                        padding: "10px 12px",
+                        background: "#f9fafb",
+                        borderRadius: 10,
+                        cursor: "pointer",
+                        transition: "all .15s",
+                        borderLeft: `3px solid ${accent}`,
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = "#f3f4f6"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = "#f9fafb"; }}
+                    >
+                      <div style={{ flex: 1, minWidth: 0 }} onClick={() => handleSelectChat(chat)}>
+                        <div style={{
+                          fontSize: 12, fontWeight: 600, color: "#111",
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: 4,
+                        }}>
+                          {chat.title}
+                        </div>
+                        <div style={{
+                          fontSize: 11, color: "#9ca3af",
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                          {chat.subject}
+                        </div>
+                        <div style={{ fontSize: 10, color: "#d1d5db", marginTop: 4 }}>
+                          {new Date(chat.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </div>
+                      </div>
+
+                      {/* Delete button */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          color: "#d1d5db", fontSize: 14, padding: "4px 8px",
+                          borderRadius: 6, transition: "all .15s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "#ef4444";
+                          e.currentTarget.style.background = "#fee2e2";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "#d1d5db";
+                          e.currentTarget.style.background = "none";
+                        }}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))
           )}

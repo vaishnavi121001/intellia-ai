@@ -3,6 +3,8 @@
 export default function DiagramVisualizer({ type, subject, accent }) {
   if (type.includes("Graph") || type.includes("Plot")) {
     return <QuadraticVisualization accent={accent} />;
+  } else if (type.includes("Geometry")) {
+    return <GeometryVisualization accent={accent} />;
   } else if (type.includes("Molecule")) {
     return <MoleculeVisualization accent={accent} />;
   } else if (type.includes("Cycle")) {
@@ -95,9 +97,9 @@ function QuadraticVisualization({ accent }) {
 
       {/* Graph */}
       <svg
-        width="100%"
-        height="300"
-        viewBox="0 0 700 300"
+  width="100%"
+  height="500"
+  viewBox="0 0 700 500"
         style={{
           border: `1px solid ${accent}22`,
           borderRadius: 10,
@@ -219,6 +221,117 @@ function QuadraticVisualization({ accent }) {
           <div style={{ fontWeight: 700, color: accent }}>Properties</div>
           <div style={{ fontSize: 11, marginTop: 4, color: "#666" }}>
             Opens: {a > 0 ? "↑" : "↓"} | Roots: 1, 3 | Y-int: {c}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ✅ MATHEMATICS - GEOMETRY (e.g. right-triangle / Pythagoras style questions)
+function GeometryVisualization({ accent }) {
+  return (
+    <div
+      style={{
+        background: "#f9fafb",
+        border: `1.5px solid ${accent}22`,
+        borderLeft: `4px solid ${accent}`,
+        borderRadius: 14,
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          color: accent,
+          letterSpacing: ".08em",
+          textTransform: "uppercase",
+          marginBottom: 12,
+        }}
+      >
+        📐 Geometry Diagram
+      </div>
+
+      <div
+        style={{
+          background: `${accent}08`,
+          border: `1px solid ${accent}22`,
+          borderRadius: 10,
+          padding: "12px 16px",
+          marginBottom: 16,
+          fontSize: 13,
+          fontFamily: "monospace",
+          color: accent,
+          fontWeight: 600,
+        }}
+      >
+        <div>a² + b² = c²</div>
+        <div style={{ marginTop: 6, fontSize: 12, color: "#666" }}>
+          Right-angled triangle: base, height and hypotenuse
+        </div>
+      </div>
+
+      <svg
+        width="100%"
+        height="300"
+        viewBox="0 0 700 300"
+        style={{
+          border: `1px solid ${accent}22`,
+          borderRadius: 10,
+          background: "#fff",
+        }}
+      >
+        {/* Triangle */}
+        <polygon points="150,250 500,250 500,80" fill={`${accent}10`} stroke={accent} strokeWidth="3" />
+
+        {/* Right angle marker */}
+        <rect x="475" y="225" width="25" height="25" fill="none" stroke={accent} strokeWidth="2" />
+
+        {/* Labels */}
+        <text x="325" y="275" fontSize="14" fill={accent} textAnchor="middle" fontWeight="700">
+          base (b)
+        </text>
+        <text x="525" y="170" fontSize="14" fill={accent} fontWeight="700">
+          height (a)
+        </text>
+        <text x="290" y="155" fontSize="14" fill={accent} fontWeight="700">
+          hypotenuse (c)
+        </text>
+
+        {/* Vertex labels */}
+        <text x="140" y="270" fontSize="12" fill="#6b7280">A</text>
+        <text x="505" y="270" fontSize="12" fill="#6b7280">B</text>
+        <text x="505" y="75" fontSize="12" fill="#6b7280">C</text>
+      </svg>
+
+      <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div
+          style={{
+            background: `${accent}08`,
+            border: `1px solid ${accent}22`,
+            borderRadius: 8,
+            padding: "10px 12px",
+            fontSize: 12,
+          }}
+        >
+          <div style={{ fontWeight: 700, color: accent }}>Pythagoras Theorem</div>
+          <div style={{ fontSize: 11, marginTop: 4, color: "#666" }}>
+            In a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides.
+          </div>
+        </div>
+        <div
+          style={{
+            background: `${accent}08`,
+            border: `1px solid ${accent}22`,
+            borderRadius: 8,
+            padding: "10px 12px",
+            fontSize: 12,
+          }}
+        >
+          <div style={{ fontWeight: 700, color: accent }}>Use Cases</div>
+          <div style={{ fontSize: 11, marginTop: 4, color: "#666" }}>
+            Finding missing sides, checking right angles, distance calculations.
           </div>
         </div>
       </div>

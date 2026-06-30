@@ -228,6 +228,18 @@ export default function ChatPage() {
   const [inputValue, setInputValue] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // ✅ FIX: reactive window width tracking (was reading window.innerWidth
+  // directly in JSX, which never updates on resize/rotation)
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (window.innerWidth > 768) {
       setSidebarOpen(true);
@@ -780,6 +792,7 @@ ${fileContent}
 
   const subject = SUBJECTS[displayIdx];
   const accent = subject.color;
+  const isMobile = windowWidth <= 768;
 
   return (
     <div
@@ -943,6 +956,7 @@ height:42px;
         chatHistory={chatHistory}
         handleSelectChat={handleSelectChat}
         setChatHistory={setChatHistory}
+        windowWidth={windowWidth}
       />
 
       {/* Main */}
@@ -1133,7 +1147,9 @@ height:42px;
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              // ✅ FIX: Enter now sends, Shift+Enter makes a newline
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
                 handleSolve();
               }
             }}
@@ -1221,6 +1237,7 @@ height:42px;
               }}
             >
               <button
+                type="button"
                 title="Attach"
                 onClick={() => fileInputRef.current?.click()}
                 style={{
@@ -1231,6 +1248,8 @@ height:42px;
                   fontSize: 20,
                   borderRadius: 8,
                   padding: "6px 10px",
+                  position: "relative",
+                  zIndex: 5,
                 }}
               >
                 📎
@@ -1242,7 +1261,7 @@ height:42px;
                   color: "#1a0303",
                 }}
               >
-                ⌘+Enter
+                Enter ⏎ to send · Shift+Enter for new line
               </span>
             </div>
 
@@ -1323,10 +1342,7 @@ height:42px;
           <div
             className="mobile-tools"
             style={{
-              display:
-                typeof window !== "undefined" && window.innerWidth <= 768
-                  ? "flex"
-                  : "none",
+              display: isMobile ? "flex" : "none",
               gap: 10,
               width: "100%",
               maxWidth: 860,
@@ -1583,48 +1599,21 @@ height:42px;
       </main>
 
       {/* Right Panel - Quiz & Follow-up */}
-      {(answer || currentQuestion) &&
-        !loading &&
-        typeof window !== "undefined" &&
-        window.innerWidth > 768 && (
+      {(answer || currentQuestion) && !loading && !isMobile && (
           <aside
             style={{
-              width:
-                typeof window !== "undefined" &&
-                  window.innerWidth <= 768
-                  ? "100%"
-                  : 360,
-
+              width: 360,
               maxWidth: "100%",
-
               background: "rgba(15,23,42,.75)",
-
               backdropFilter: "blur(25px)",
-
               display: "flex",
-
               flexDirection: "column",
-
-              borderLeft:
-                typeof window !== "undefined" &&
-                  window.innerWidth <= 768
-                  ? "none"
-                  : "1px solid rgba(255,255,255,.1)",
-
-              borderTop:
-                typeof window !== "undefined" &&
-                  window.innerWidth <= 768
-                  ? "1px solid rgba(255,255,255,.1)"
-                  : "none",
-
+              borderLeft: "1px solid rgba(255,255,255,.1)",
+              borderTop: "none",
               position: "relative",
-
               minHeight: "auto",
-
               maxHeight: "none",
-
               overflowY: "visible",
-
               flexShrink: 0
             }}
           >

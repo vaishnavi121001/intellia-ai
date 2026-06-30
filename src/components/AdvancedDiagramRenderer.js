@@ -6,7 +6,17 @@ export default function AdvancedDiagramRenderer({ topic, subject, accent }) {
   const visualizations = useVisualization(topic, subject, accent);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 24 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 20,
+        marginTop: 24,
+        alignItems: "start", // ✅ FIX: stops short diagrams from being
+                              // stretched to match the tallest sibling,
+                              // which was leaving blank space in cards
+      }}
+    >
       {visualizations.map((viz, idx) => (
         <DiagramContainer key={idx} type={viz.type} title={viz.title} accent={accent} />
       ))}
@@ -114,7 +124,10 @@ function DiagramContainer({ type, title, accent }) {
       >
         📊 {title}
       </div>
-      <div style={{ minHeight: 250 }}>{getContent()}</div>
+      {/* ✅ FIX: was minHeight: 250 forcing every card to a fixed tall
+          height even when its SVG content was shorter, leaving blank
+          space. Now sized to content. */}
+      <div>{getContent()}</div>
     </div>
   );
 }
