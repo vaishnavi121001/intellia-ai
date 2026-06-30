@@ -73,48 +73,46 @@ export default function SignInPage() {
   const currentSubject = subjects[activeSubjectIdx];
 
   return (
-  <div
-  style={{
-    minHeight: "100vh",
-    width: "100%",
-    
-    background: "#7c7c8b",
-    backgroundImage: `
-      radial-gradient(circle at 10% 20%, rgba(130, 128, 160, 0.14) 0%, transparent 45%),
-      radial-gradient(circle at 90% 80%, rgba(97, 132, 138, 0.74) 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, rgba(119, 95, 158, 0.05) 0%, transparent 50%)
-    `,
-    display: "flex",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    fontFamily: "'DM Sans', sans-serif",
-
-    
-    overflowX: "hidden",
-    overflowY: "auto",
-    WebkitOverflowScrolling: "touch",
-    position: "relative",
-    
-    boxSizing: "border-box",
-  }}
->
+    <div
+      style={{
+        minHeight: "100dvh",
+        width: "100%",
+        background: "#7c7c8b",
+        backgroundImage: `
+          radial-gradient(circle at 10% 20%, rgba(130, 128, 160, 0.14) 0%, transparent 45%),
+          radial-gradient(circle at 90% 80%, rgba(97, 132, 138, 0.74) 0%, transparent 45%),
+          radial-gradient(circle at 50% 50%, rgba(119, 95, 158, 0.05) 0%, transparent 50%)
+        `,
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        fontFamily: "'DM Sans', sans-serif",
+        overflowX: "hidden",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
+        position: "relative",
+        boxSizing: "border-box",
+        padding: "16px 12px",
+      }}
+    >
       {/* Dynamic Native Style Injection for Dashboard-accurate High Fidelity Graphics */}
       <style dangerouslySetInnerHTML={{
         __html: `
+        * { box-sizing: border-box; }
+
         @keyframes dynamicOrbit {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-          @keyframes floating3D {
-  0%, 100% { transform: translateY(0) rotateY(0deg); }
-  50% { transform: translateY(-8px) rotateY(5deg); }
-}
-
-.logo-3d-float {
-  animation: floating3D 4s ease-in-out infinite;
-  perspective: 1000px;
-  display: inline-flex;
-}
+        @keyframes floating3D {
+          0%, 100% { transform: translateY(0) rotateY(0deg); }
+          50% { transform: translateY(-8px) rotateY(5deg); }
+        }
+        .logo-3d-float {
+          animation: floating3D 4s ease-in-out infinite;
+          perspective: 1000px;
+          display: inline-flex;
+        }
         @keyframes float3D {
           0%, 100% { transform: translateY(0px) scale(1) rotate(0deg); }
           50% { transform: translateY(-12px) scale(1.03) rotate(2deg); }
@@ -135,6 +133,7 @@ export default function SignInPage() {
           border: 1px solid rgba(255, 255, 255, 0.08) !important;
           color: #ffffff !important;
           transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+          font-size: 16px !important; /* prevents iOS auto-zoom on focus */
         }
         .form-input-field:focus {
           border-color: ${currentSubject.color} !important;
@@ -160,23 +159,130 @@ export default function SignInPage() {
           background: rgba(255, 255, 255, 0.05);
           border-color: ${currentSubject.color}40;
         }
-          @media (max-width: 768px) {
 
-  .glass-panel-main{
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: visible !important;
-  }
+        .left-panel, .right-panel {
+          padding: 50px;
+          box-sizing: border-box;
+        }
 
-  .glass-panel-main > div{
-    width: 100% !important;
-    flex: unset !important;
-    padding: 24px !important;
-    box-sizing: border-box;
-  }
+        .icon-stage {
+          width: 150px;
+          height: 150px;
+          font-size: 76px;
+        }
 
-}
+        .energy-ring {
+          width: 220px;
+          height: 220px;
+        }
+
+        .glow-ring {
+          width: 170px;
+          height: 170px;
+        }
+
+        .subject-heading {
+          font-size: 32px;
+        }
+
+        .welcome-heading {
+          font-size: 34px;
+        }
+
+        .modules-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        @media (max-width: 900px) {
+          .glass-panel-main {
+            flex-direction: column !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            border-radius: 24px !important;
+          }
+
+          .left-panel, .right-panel {
+            width: 100% !important;
+            flex: unset !important;
+            padding: 28px 22px !important;
+            border-right: none !important;
+          }
+
+          .left-panel {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+          }
+
+          .icon-stage {
+            width: 110px !important;
+            height: 110px !important;
+            font-size: 56px !important;
+            border-radius: 22px !important;
+          }
+
+          .energy-ring {
+            width: 160px !important;
+            height: 160px !important;
+          }
+
+          .glow-ring {
+            width: 130px !important;
+            height: 130px !important;
+          }
+
+          .subject-heading {
+            font-size: 24px !important;
+          }
+
+          .welcome-heading {
+            font-size: 26px !important;
+          }
+
+          .modules-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .left-panel, .right-panel {
+            padding: 22px 16px !important;
+          }
+
+          .icon-stage {
+            width: 90px !important;
+            height: 90px !important;
+            font-size: 44px !important;
+          }
+
+          .energy-ring {
+            width: 130px !important;
+            height: 130px !important;
+          }
+
+          .glow-ring {
+            width: 110px !important;
+            height: 110px !important;
+          }
+
+          .subject-heading {
+            font-size: 20px !important;
+          }
+
+          .welcome-heading {
+            font-size: 22px !important;
+          }
+
+          .modules-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .quick-tags {
+            gap: 6px !important;
+          }
+        }
       `}} />
 
       {/* Cybernetic Particle Mesh Nodes */}
@@ -187,25 +293,25 @@ export default function SignInPage() {
       </div>
 
       {/* Main Structural Layout Box Frame */}
-<div
-  className="glass-panel-main"
-  style={{
-    width: "100%",
-    maxWidth: "1160px",
-    borderRadius: "32px",
-    display: "flex",
-    flexDirection: "row",
-    overflow: "visible",
-    zIndex: 2,
-  }}
->
+      <div
+        className="glass-panel-main"
+        style={{
+          width: "100%",
+          maxWidth: "1160px",
+          borderRadius: "32px",
+          display: "flex",
+          flexDirection: "row",
+          overflow: "visible",
+          zIndex: 2,
+          margin: "auto 0",
+        }}
+      >
         {/* LEFT CANVAS LAYOUT: Multidisciplinary 3D Hub Projection */}
         <div
+          className="left-panel"
           style={{
             flex: 1.25,
-            
-background: "rgba(18, 23, 24, 0.4)",
-            padding: "50px",
+            background: "rgba(18, 23, 24, 0.4)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -213,36 +319,34 @@ background: "rgba(18, 23, 24, 0.4)",
             borderRight: "1px solid rgba(255, 255, 255, 0.05)",
           }}
         >
-{/* Top Brand Logo Panel */}
-<div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
-  <div className="logo-3d-float" style={{ 
-    background: "rgb(243, 236, 236)", 
-    padding: "10px 16px", 
-    borderRadius: "12px", 
-    display: "inline-flex",
-    alignItems: "center",
-    border: "1px solid rgba(255, 255, 255, 0.05)",
-    width: "fit-content"
-  }}>
-    <img 
-      src="/Intellia-ai.png" 
-      alt="Intellia AI Logo" 
-      style={{ height: "25px" }} 
-    />
-  </div>
-  <p style={{ color: "#64748b", fontSize: "15px", margin: 0 }}>
-    Your Cross-Subject Learning Companion
-  </p>
-</div>
+          {/* Top Brand Logo Panel */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
+            <div className="logo-3d-float" style={{
+              background: "rgb(243, 236, 236)",
+              padding: "10px 16px",
+              borderRadius: "12px",
+              display: "inline-flex",
+              alignItems: "center",
+              border: "1px solid rgba(255, 255, 255, 0.05)",
+              width: "fit-content"
+            }}>
+              <img
+                src="/Intellia-ai.png"
+                alt="Intellia AI Logo"
+                style={{ height: "25px" }}
+              />
+            </div>
+            <p style={{ color: "#64748b", fontSize: "15px", margin: 0 }}>
+              Your Cross-Subject Learning Companion
+            </p>
+          </div>
 
           {/* Core Visualizer Viewport: Interactive Dynamic 3D Subject Projector */}
           <div style={{ margin: "30px 0", position: "relative" }}>
 
             {/* Background 3D Energy Rings */}
-            <div style={{
+            <div className="energy-ring" style={{
               position: "absolute",
-              width: "220px",
-              height: "220px",
               border: `2px dashed ${currentSubject.color}`,
               opacity: 0.15,
               borderRadius: "50%",
@@ -254,10 +358,8 @@ background: "rgba(18, 23, 24, 0.4)",
 
             <div style={{ position: "relative", width: "fit-content", margin: "0 auto 35px auto" }}>
               {/* Floating Hologram Base Ring */}
-              <div style={{
+              <div className="glow-ring" style={{
                 position: "absolute",
-                width: "170px",
-                height: "170px",
                 background: `radial-gradient(circle, ${currentSubject.bgGlow} 0%, transparent 70%)`,
                 borderRadius: "50%",
                 top: "-10px",
@@ -266,15 +368,13 @@ background: "rgba(18, 23, 24, 0.4)",
 
               {/* Dynamic Core Subject Container Icon */}
               <div
+                className="icon-stage"
                 style={{
-                  width: "150px",
-                  height: "150px",
                   borderRadius: "28px",
                   background: "linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.3) 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "76px",
                   border: `1px solid ${currentSubject.color}60`,
                   boxShadow: `0 0 40px ${currentSubject.bgGlow}, inset 0 0 15px rgba(255,255,255,0.05)`,
                   animation: "float3D 5s ease-in-out infinite",
@@ -295,17 +395,18 @@ background: "rgba(18, 23, 24, 0.4)",
                 padding: "4px 10px",
                 borderRadius: "8px",
                 boxShadow: `0 0 15px ${currentSubject.color}`,
-                transition: "all 0.5s ease"
+                transition: "all 0.5s ease",
+                whiteSpace: "nowrap",
               }}>
                 AI TUTOR ACTIVE
               </div>
             </div>
 
             <div style={{ textAlign: "center" }}>
-              <h2 style={{ fontSize: "32px", fontWeight: "900", color: "#ffffff", marginBottom: "12px", letterSpacing: "-0.5px" }}>
+              <h2 className="subject-heading" style={{ fontWeight: "900", color: "#ffffff", marginBottom: "12px", letterSpacing: "-0.5px" }}>
                 Explore <span style={{ color: currentSubject.color, transition: "color 0.5s ease" }}>{currentSubject.name}</span>
               </h2>
-              <p style={{ color: "#94a3b8", fontSize: "14.5px", lineHeight: "1.6", maxWidth: "420px", margin: "0 auto", height: "48px", transition: "all 0.5s" }}>
+              <p style={{ color: "#94a3b8", fontSize: "14.5px", lineHeight: "1.6", maxWidth: "420px", margin: "0 auto", transition: "all 0.5s" }}>
                 {currentSubject.desc}
               </p>
             </div>
@@ -317,7 +418,7 @@ background: "rgba(18, 23, 24, 0.4)",
               Synchronized Learning Modules
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+            <div className="modules-grid">
               {subjects.map((sub, i) => {
                 const isActive = i === activeSubjectIdx;
                 return (
@@ -345,9 +446,9 @@ background: "rgba(18, 23, 24, 0.4)",
 
         {/* RIGHT CANVAS LAYOUT: Gateway Form Entry Access Box */}
         <div
+          className="right-panel"
           style={{
             flex: 1,
-            padding: "50px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -374,7 +475,7 @@ background: "rgba(18, 23, 24, 0.4)",
                 🔥 12 Day Active Streak Verified
               </div>
 
-              <h3 style={{ fontSize: "34px", fontWeight: "900", color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
+              <h3 className="welcome-heading" style={{ fontWeight: "900", color: "#ffffff", margin: "0 0 6px 0", letterSpacing: "-0.5px" }}>
                 Welcome back
               </h3>
               <p style={{ color: "#64748b", fontSize: "13.5px", margin: 0 }}>
@@ -413,14 +514,13 @@ background: "rgba(18, 23, 24, 0.4)",
                     width: "100%",
                     padding: "14px 16px",
                     borderRadius: "14px",
-                    fontSize: "14px",
                     outline: "none"
                   }}
                 />
               </div>
 
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", flexWrap: "wrap", gap: "4px" }}>
                   <label style={{ fontWeight: "700", fontSize: "11px", color: "#94a3b8", letterSpacing: "0.5px" }}>SECURITY PASSPHRASE</label>
                   <a href="#" style={{ fontSize: "12px", color: "#6366f1", textDecoration: "none", fontWeight: "600" }}>Forgot Keys?</a>
                 </div>
@@ -435,7 +535,6 @@ background: "rgba(18, 23, 24, 0.4)",
                     width: "100%",
                     padding: "14px 16px",
                     borderRadius: "14px",
-                    fontSize: "14px",
                     outline: "none"
                   }}
                 />
@@ -444,7 +543,7 @@ background: "rgba(18, 23, 24, 0.4)",
 
             {/* Account preservation checkbox */}
             <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "13px", color: "#64748b" }}>
-              <input type="checkbox" style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "#4f46e5" }} />
+              <input type="checkbox" style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "#4f46e5", flexShrink: 0 }} />
               <span>Remember account matrix instance</span>
             </label>
 
@@ -468,7 +567,7 @@ background: "rgba(18, 23, 24, 0.4)",
             </button>
 
             {/* Micro Quick-Metric Tags */}
-            <div style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "10px" }}>
+            <div className="quick-tags" style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginTop: "10px" }}>
               {["Mechanics", "DNA Models", "Calculus Space", "Organic Labs"].map((item) => (
                 <span
                   key={item}

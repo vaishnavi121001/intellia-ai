@@ -292,7 +292,7 @@ export default function QuizPanel({
                     Object.keys(answers).length === quiz.length
                       ? accent
                       : "#e5e7eb",
-                  color: "#fff",
+                  color: "#272121",
                   border: "none",
                   borderRadius: 10,
                   fontWeight: 600,

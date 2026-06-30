@@ -15,13 +15,15 @@ body {
   font-family: "DM Sans", sans-serif;
   background: #f8f8f8;
   color: #111;
-  height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 #__next {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100%;
 }
 
 input, textarea, button {
