@@ -2,6 +2,20 @@
 
 import { useState, useRef } from "react";
 
+// Relative date label for grouping — Today / Yesterday / Recent
+function groupLabel(dateStr) {
+  const now = new Date();
+  const d = new Date(dateStr);
+  const startOfDay = (dt) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
+  const diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+
+  if (diffDays <= 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  return "Recent";
+}
+
+const GROUP_ORDER = ["Today", "Yesterday", "Recent"];
+
 export default function Sidebar({
   sidebarOpen,
   setSidebarOpen,
@@ -30,13 +44,15 @@ export default function Sidebar({
     chat.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ✅ FIX: group chat history by date so chats are visually separated
+  // ✅ Group chat history as Today / Yesterday / Recent (Claude-style relative grouping)
   const groupedHistory = filteredHistory.reduce((groups, chat) => {
-    const dateKey = new Date(chat.timestamp).toLocaleDateString();
-    if (!groups[dateKey]) groups[dateKey] = [];
-    groups[dateKey].push(chat);
+    const label = groupLabel(chat.timestamp);
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(chat);
     return groups;
   }, {});
+
+  const orderedGroupKeys = GROUP_ORDER.filter((k) => groupedHistory[k]);
 
   const deleteChat = (chatId) => {
     const updated = chatHistory.filter((chat) => chat.id !== chatId);
@@ -172,15 +188,15 @@ export default function Sidebar({
           }}
         />
 
-        {/* History list - grouped by date */}
+        {/* History list - grouped as Today / Yesterday / Recent */}
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          {Object.keys(groupedHistory).length === 0 ? (
+          {orderedGroupKeys.length === 0 ? (
             <div style={{ fontSize: 12, color: "#9ca3af", padding: "16px 8px", textAlign: "center" }}>
               No chats yet. Start a new conversation!
             </div>
           ) : (
-            Object.entries(groupedHistory).map(([date, chats]) => (
-              <div key={date} style={{ marginBottom: 10 }}>
+            orderedGroupKeys.map((label) => (
+              <div key={label} style={{ marginBottom: 10 }}>
                 <div
                   style={{
                     fontSize: 10,
@@ -191,10 +207,10 @@ export default function Sidebar({
                     textTransform: "uppercase",
                   }}
                 >
-                  {date}
+                  {label}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {chats.map((chat) => (
+                  {groupedHistory[label].map((chat) => (
                     <div
                       key={chat.id}
                       style={{

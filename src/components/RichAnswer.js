@@ -78,7 +78,7 @@ export default function RichAnswer({ text, accent }) {
         );
       } else if (m[5] !== undefined) {
         // **bold**
-        parts.push(<strong key={`${keyPrefix}b${i}`} style={{ fontWeight: 700, color: "#111" }}>{m[5]}</strong>);
+        parts.push(<strong key={`${keyPrefix}b${i}`} style={{ fontWeight: 700, color: "#f8fafc" }}>{m[5]}</strong>);
       } else if (m[6] !== undefined) {
         // *italic*
         parts.push(<em key={`${keyPrefix}em${i}`}>{m[6]}</em>);
@@ -86,8 +86,8 @@ export default function RichAnswer({ text, accent }) {
         // `code`
         parts.push(
           <code key={`${keyPrefix}c${i}`} style={{
-            background: "#f3f4f6", borderRadius: 5, padding: "2px 6px",
-            fontSize: "0.87em", fontFamily: "monospace", color: "#c0392b",
+            background: "rgba(255,255,255,0.08)", borderRadius: 6, padding: "2px 7px",
+            fontSize: "0.87em", fontFamily: "monospace", color: "#fca5a5",
           }}>{m[7]}</code>
         );
       }
@@ -249,15 +249,15 @@ export default function RichAnswer({ text, accent }) {
         if (elem.mathType === "display") {
           return (
             <div key={idx} style={{
-              background: "#f8f9ff",
-              border: `1.5px solid ${accent}20`,
+              background: "rgba(255,255,255,0.05)",
+              border: `1.5px solid ${accent}30`,
               borderLeft: `4px solid ${accent}`,
-              borderRadius: 12,
-              padding: "20px 24px",
-              margin: "20px 0",
+              borderRadius: 14,
+              padding: "24px 28px",
+              margin: "24px 0",
               overflowX: "auto",
             }}>
-              <div style={{ textAlign: "center", fontSize: 16, lineHeight: 2.2 }}
+              <div style={{ textAlign: "center", fontSize: 18, lineHeight: 2.2, color: "#f1f5f9" }}
                 dangerouslySetInnerHTML={{ __html: renderLatexBlock(elem.content) }}
               />
             </div>
@@ -278,27 +278,29 @@ export default function RichAnswer({ text, accent }) {
   const nodes = parseDocument(text);
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8, color: "#1a1a1a", fontSize: 15 }}>
+    <div style={{ fontFamily: "'DM Sans', sans-serif", lineHeight: 1.85, color: "#e5e7eb", fontSize: 16.5 }}>
       {nodes.map((node, idx) => {
-        if (node.type === "space") return <div key={idx} style={{ height: 12 }} />;
+        if (node.type === "space") return <div key={idx} style={{ height: 14 }} />;
 
         if (node.type === "hr") return (
-          <hr key={idx} style={{ border: "none", borderTop: `1px solid ${accent}22`, margin: "24px 0" }} />
+          <hr key={idx} style={{ border: "none", borderTop: `1px solid ${accent}22`, margin: "30px 0" }} />
         );
 
         if (node.type === "heading") {
-          const sizes = { 1: 26, 2: 22, 3: 19, 4: 17, 5: 15, 6: 13 };
+          // ✅ Bigger, more premium heading scale (ChatGPT/Claude-style hierarchy)
+          const sizes = { 1: 34, 2: 27, 3: 22, 4: 19, 5: 17, 6: 15 };
           return (
             <div key={idx} style={{
-              fontSize: sizes[node.level] || 16,
-              fontWeight: 700,
-              color: "#111",
-              margin: `${26 - node.level * 2}px 0 10px`,
-              background: `${accent}08`,
-              border: `1.5px solid ${accent}25`,
-              borderLeft: `4px solid ${accent}`,
-              borderRadius: 12,
-              padding: "12px 18px",
+              fontSize: sizes[node.level] || 18,
+              fontWeight: 750,
+              color: "#f8fafc",
+              margin: `${34 - node.level * 2}px 0 14px`,
+              background: "rgba(255,255,255,0.05)",
+              border: `1.5px solid ${accent}40`,
+              borderLeft: `5px solid ${accent}`,
+              borderRadius: 14,
+              padding: node.level === 1 ? "18px 22px" : "14px 20px",
+              letterSpacing: node.level === 1 ? "-0.5px" : "-0.2px",
             }}>
               {/* Headings can also have bold/italic/math */}
               {renderInline(node.content, `h${idx}`)}
@@ -307,17 +309,17 @@ export default function RichAnswer({ text, accent }) {
         }
 
         if (node.type === "list") return (
-          <ul key={idx} style={{ margin: "12px 0", paddingLeft: 0, listStyle: "none" }}>
+          <ul key={idx} style={{ margin: "16px 0", paddingLeft: 0, listStyle: "none" }}>
             {node.items.map((item, ii) => (
               <li key={ii} style={{
-                display: "flex", gap: 10, alignItems: "flex-start",
-                marginBottom: 8, paddingLeft: item.depth * 16,
+                display: "flex", gap: 12, alignItems: "flex-start",
+                marginBottom: 10, paddingLeft: item.depth * 18,
               }}>
                 <span style={{
-                  marginTop: 7, width: 6, height: 6, borderRadius: "50%",
+                  marginTop: 9, width: 7, height: 7, borderRadius: "50%",
                   background: accent, flexShrink: 0,
                 }} />
-                <span style={{ lineHeight: 1.75, color: "#374151" }}>
+                <span style={{ lineHeight: 1.8, color: "#cbd5e1", fontSize: 16 }}>
                   {/* List items get full inline rendering too */}
                   {renderInline(item.content, `li${idx}-${ii}`)}
                 </span>
@@ -327,9 +329,9 @@ export default function RichAnswer({ text, accent }) {
         );
 
         if (node.type === "code") return (
-          <div key={idx} style={{ margin: "16px 0", borderRadius: 12, overflow: "hidden", border: "1px solid #e5e7eb" }}>
+          <div key={idx} style={{ margin: "20px 0", borderRadius: 14, overflow: "hidden", border: "1px solid #e5e7eb" }}>
             <div style={{
-              background: "#1f2937", padding: "10px 16px",
+              background: "#1f2937", padding: "12px 18px",
               display: "flex", gap: 6, alignItems: "center", justifyContent: "space-between",
             }}>
               <div style={{ display: "flex", gap: 6 }}>
@@ -342,8 +344,8 @@ export default function RichAnswer({ text, accent }) {
               </span>
             </div>
             <pre style={{
-              background: "#111827", color: "#f3f4f6", padding: "16px 20px",
-              overflowX: "auto", fontSize: 13, lineHeight: 1.7, margin: 0, fontFamily: "monospace",
+              background: "#111827", color: "#f3f4f6", padding: "20px 24px",
+              overflowX: "auto", fontSize: 14, lineHeight: 1.75, margin: 0, fontFamily: "monospace",
             }}>
               <code>{node.content}</code>
             </pre>
@@ -351,18 +353,20 @@ export default function RichAnswer({ text, accent }) {
         );
 
         if (node.type === "table") return (
-          <div key={idx} style={{ margin: "16px 0", overflowX: "auto", borderRadius: 12, border: `1px solid ${accent}22` }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+          // ✅ More spacious, premium table treatment
+          <div key={idx} style={{ margin: "22px 0", overflowX: "auto", borderRadius: 16, border: `1.5px solid ${accent}30`, boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 15.5, minWidth: 480 }}>
               <tbody>
                 {node.lines.map((line, li) => (
                   <tr key={li}>
                     {line.split("|").filter((c) => c.trim()).map((cell, ci) => (
                       <td key={ci} style={{
-                        padding: "11px 14px",
-                        borderBottom: `1px solid ${accent}22`,
-                        borderRight: ci === 0 ? `1px solid ${accent}22` : "none",
-                        background: li === 0 ? `${accent}08` : "#fff",
+                        padding: "16px 22px",
+                        borderBottom: `1px solid ${accent}25`,
+                        borderRight: ci === 0 ? `1px solid ${accent}25` : "none",
+                        background: li === 0 ? `${accent}22` : "rgba(255,255,255,0.03)",
                         fontWeight: li === 0 ? 700 : 400,
+                        color: li === 0 ? "#f8fafc" : "#cbd5e1",
                       }}>
                         {renderInline(cell.trim(), `td${li}-${ci}`)}
                       </td>
@@ -375,7 +379,7 @@ export default function RichAnswer({ text, accent }) {
         );
 
         if (node.type === "paragraph") return (
-          <div key={idx} style={{ margin: "10px 0", fontSize: 15, lineHeight: 1.8, color: "#374151" }}>
+          <div key={idx} style={{ margin: "14px 0", fontSize: 16.5, lineHeight: 1.85, color: "#cbd5e1" }}>
             {renderParagraphElements(node.elements)}
           </div>
         );

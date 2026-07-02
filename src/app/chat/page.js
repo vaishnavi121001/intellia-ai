@@ -619,13 +619,13 @@ export default function ChatPage() {
         .tab { border: none; background: transparent; cursor: pointer; border-radius: 9px; font-size: 13.5px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: #94a3b8; transition: all .2s; white-space: nowrap; padding: 9px 16px; }
         .tab.on { background: rgba(255,255,255,0.9); box-shadow: 0 8px 20px rgba(0,0,0,0.25); color: #111; font-weight: 700; }
         .answer-wrap {
-          background: rgba(255,255,255,0.95);
-          backdrop-filter: blur(18px);
-          border: 1px solid rgba(255,255,255,0.7);
-          border-radius: 24px;
-          padding: 32px;
-          margin-top: 24px;
-          box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+          background: transparent;
+          border: none;
+          border-radius: 0;
+          padding: 0;
+          margin-top: 20px;
+          box-shadow: none;
+          font-size: 16px;
         }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
         @keyframes sheetUp { from { opacity: 0; transform: translateY(30px) } to { opacity: 1; transform: none } }
@@ -791,45 +791,63 @@ export default function ChatPage() {
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {/* Hero Section */}
-{!answer && (
-  <div style={{ textAlign: "center", padding: "40px 20px 60px", position: "relative" }}>
-    <div style={{ position: "absolute", top: "-50px", left: "50%", transform: "translateX(-50%)", width: "240px", height: "240px", background: `${accent}20`, filter: "blur(90px)", borderRadius: "50%", zIndex: 0 }} />
+        {/* Hero */}
+        {!answer && (
+          <div style={{ textAlign: "center", marginBottom: 30, position: "relative", padding: "30px 20px" }}>
+            <div
+              style={{
+                position: "absolute", top: "-50px", left: "50%", transform: "translateX(-50%)",
+                width: "280px", height: "280px", background: `${accent}30`, filter: "blur(100px)",
+                borderRadius: "50%", zIndex: 0,
+              }}
+            />
+            <div
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px",
+                borderRadius: 999, background: "rgba(255,255,255,0.08)", border: `1px solid ${accent}40`,
+                color: accent, fontSize: 12, fontWeight: 700, marginBottom: 20,
+                backdropFilter: "blur(12px)", position: "relative", zIndex: 2,
+              }}
+            >
+              🚀 AI Learning Platform
+            </div>
 
-    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", borderRadius: 99, background: "rgba(255,255,255,0.05)", border: `1px solid ${accent}40`, color: accent, fontSize: 11, fontWeight: 800, textTransform: "uppercase", marginBottom: 20, position: "relative", zIndex: 2 }}>
-      🚀 Intellia AI Powered
-    </div>
+            <h1
+              style={{
+                fontSize: "clamp(30px,4vw,46px)", fontWeight: 800, lineHeight: 1.1,
+                color: "#ffffff", letterSpacing: "-1px", marginBottom: 18, position: "relative", zIndex: 2,
+              }}
+            >
+              Learn{" "}
+              <span className={`hero-word${animating ? " out" : ""}`} style={{ color: accent, textShadow: `0 0 20px ${accent}` }}>
+                {subject.name}
+              </span>{" "}
+              with Intellia AI
+            </h1>
 
-    <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 800, color: "#fff", marginBottom: 16, position: "relative", zIndex: 2 }}>
-      Master <span style={{ color: accent, textShadow: `0 0 30px ${accent}60` }}>{subject.name}</span> instantly.
-    </h1>
+            <p style={{ fontSize: 18, color: "#94a3b8", maxWidth: 700, margin: "0 auto", lineHeight: 1.8, position: "relative", zIndex: 2 }}>
+              Welcome back <strong style={{ color: "#fff" }}>{user.name}</strong>. Get visual explanations, AI-generated diagrams,
+              quizzes, follow-up questions, and interactive learning experiences powered by Intellia AI.
+            </p>
 
-    <p style={{ fontSize: 17, color: "#94a3b8", maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.6, position: "relative", zIndex: 2 }}>
-      Welcome back, <strong>{user.name}</strong>. Your personalized learning path with interactive diagrams and AI insights starts here.
-    </p>
+            <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 28, flexWrap: "wrap", position: "relative", zIndex: 2 }}>
+              {["🤖 AI Tutor", "📊 Smart Diagrams", "🧠 Interactive Quiz"].map((t) => (
+                <div key={t} style={{ padding: "10px 18px", borderRadius: 14, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff", fontSize: 13, fontWeight: 700 }}>
+                  {t}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-    <div style={{ display: "flex", justifyContent: "center", gap: 12, position: "relative", zIndex: 2 }}>
-      {["🤖 AI Tutor", "📊 Visuals", "🧠 Quizzes"].map((t) => (
-        <div key={t} style={{ padding: "8px 16px", borderRadius: 10, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#e2e8f0", fontSize: 12, fontWeight: 600 }}>
-          {t}
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "6px", marginBottom: 28 }}>
+          {subject.tabs.map((t, i) => (
+            <button key={t} className={`tab${activeTab === i ? " on" : ""}`} onClick={() => setActiveTab(i)} title={`Switch to ${t}`}>
+              {t}
+            </button>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-)}
-
-{/* Tabs */}
-<div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "5px", marginBottom: 32, width: "fit-content", marginInline: "auto" }}>
-  {subject.tabs.map((t, i) => (
-    <button 
-      key={t} 
-      onClick={() => setActiveTab(i)}
-      style={{ padding: "8px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "0.2s", background: activeTab === i ? accent : "transparent", color: activeTab === i ? "#fff" : "#94a3b8" }}
-    >
-      {t}
-    </button>
-  ))}
-</div>
 
         {/* Input Box */}
         <div
@@ -950,7 +968,7 @@ export default function ChatPage() {
 
         {/* Answer */}
         {answer && !loading && (
-          <div style={{ width: "100%", maxWidth: 860, overflowX: "hidden" }}>
+          <div style={{ width: "100%", maxWidth: 1080, overflowX: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingLeft: 4 }}>
               <div
                 className="logo-badge-3d"
@@ -979,11 +997,11 @@ export default function ChatPage() {
                     <DiagramVisualizer type={diagramType} subject={subject.name} accent={accent} />
                     <AdvancedDiagramRenderer topic={currentQuestion} subject={subject.name} accent={accent} />
                   </div>
-                  <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #e5e7eb" }}>
-                    <p style={{ fontSize: 12, color: "#9ca3af", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>Key Elements</p>
+                  <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                    <p style={{ fontSize: 12, color: "#94a3b8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>Key Elements</p>
                     <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 12, background: "#fff", padding: "4px 8px", borderRadius: 6, border: "1px solid #e5e7eb" }}>• Structural Analysis</span>
-                      <span style={{ fontSize: 12, background: "#fff", padding: "4px 8px", borderRadius: 6, border: "1px solid #e5e7eb" }}>• Context: {subject.name}</span>
+                      <span style={{ fontSize: 12, background: "rgba(255,255,255,0.06)", color: "#e2e8f0", padding: "4px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)" }}>• Structural Analysis</span>
+                      <span style={{ fontSize: 12, background: "rgba(255,255,255,0.06)", color: "#e2e8f0", padding: "4px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)" }}>• Context: {subject.name}</span>
                     </div>
                   </div>
                 </div>
