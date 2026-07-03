@@ -380,6 +380,7 @@ export function useVisualization(topic, subject, accent) {
           { type: "adam_optimizer", title: "Adam Optimizer" },
           { type: "learning_rate", title: "Learning Rate Schedule" },
         ],
+        
       };
 
       for (let i = 1; i <= 50; i++) {

@@ -4,14 +4,31 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import RichAnswer from "@/components/RichAnswer";
 import DiagramVisualizer from "@/components/DiagramVisualizer";
-import AdvancedDiagramRenderer from "@/components/AdvancedDiagramRenderer";
 import Sidebar from "@/components/Sidebar";
 import FollowUpPanel from "@/components/FollowUpPanel";
 import QuizPanel from "@/components/QuizPanel";
 
+const THEMES = {
+  Mathematics: "#6366F1",
+  Chemistry: "#10B981",
+  Biology: "#22C55E",
+  Physics: "#F59E0B",
+  AI: "#7C3AED",
+};
+
+// Used ONLY when the LLM's [VISUAL_START] block is missing/unparseable —
+// a sensible per-subject default, not keyword detection.
+const SUBJECT_DEFAULT_DIAGRAM = {
+  Mathematics: "math_graph",
+  Chemistry: "molecule_structure",
+  Biology: "animal_cell",
+  Physics: "force_diagram",
+  AI: "neural_network",
+};
+
 const SUBJECTS = [
   {
-    name: "Mathematics", emoji: "📐", color: "#4F46E5", light: "#EEF2FF", tabs: ["AI Solver"],
+    name: "Mathematics", emoji: "📐", color: THEMES.Mathematics, light: "#EEF2FF", tabs: ["AI Solver"],
     demos: [
       { title: "Solve complex equations", desc: "Solve a system of 3 linear equations", bg: "#EEF2FF", icon: "∑" },
       { title: "Visualize functions", desc: "Plot and analyze quadratic functions", bg: "#F0FDF4", icon: "📈" },
@@ -19,7 +36,7 @@ const SUBJECTS = [
     ],
   },
   {
-    name: "Chemistry", emoji: "⚗️", color: "#059669", light: "#ECFDF5", tabs: ["AI Solver"],
+    name: "Chemistry", emoji: "⚗️", color: THEMES.Chemistry, light: "#ECFDF5", tabs: ["AI Solver"],
     demos: [
       { title: "Teaching material", desc: "Make a class 11 worksheet on chemical bonding", bg: "#ECFDF5", icon: "🧪" },
       { title: "Explain concepts", desc: "Explain benzene resonance structures", bg: "#EFF6FF", icon: "⚗️" },
@@ -27,7 +44,7 @@ const SUBJECTS = [
     ],
   },
   {
-    name: "Biology", emoji: "🧬", color: "#10361e", light: "#F0FDF4", tabs: ["AI Solver"],
+    name: "Biology", emoji: "🧬", color: THEMES.Biology, light: "#F0FDF4", tabs: ["AI Solver"],
     demos: [
       { title: "Visualize processes", desc: "Diagram the steps of mitosis with labels", bg: "#F0FDF4", icon: "🧬" },
       { title: "Simplify concepts", desc: "Explain DNA transcription vs translation", bg: "#EFF6FF", icon: "🔬" },
@@ -35,7 +52,7 @@ const SUBJECTS = [
     ],
   },
   {
-    name: "Physics", emoji: "⚡", color: "#372c20", light: "#FFFBEB", tabs: ["AI Solver"],
+    name: "Physics", emoji: "⚡", color: THEMES.Physics, light: "#FFFBEB", tabs: ["AI Solver"],
     demos: [
       { title: "Simulate motion", desc: "Projectile motion with angle and velocity", bg: "#FFFBEB", icon: "🚀" },
       { title: "Explain laws", desc: "Newton's 3 laws with real-world examples", bg: "#EEF2FF", icon: "⚡" },
@@ -43,7 +60,7 @@ const SUBJECTS = [
     ],
   },
   {
-    name: "AI", emoji: "🤖", color: "#7C3AED", light: "#F5F3FF", tabs: ["AI Explainer"],
+    name: "AI", emoji: "🤖", color: THEMES.AI, light: "#F5F3FF", tabs: ["AI Explainer"],
     demos: [
       { title: "Understand ML algorithms", desc: "Explain gradient descent with diagrams", bg: "#F5F3FF", icon: "🤖" },
       { title: "Code & debug AI models", desc: "Build a simple neural network in Python", bg: "#ECFDF5", icon: "🧠" },
@@ -58,6 +75,51 @@ function buildSystemPrompt(subjectName, tabName) {
 Your task: Provide detailed, step-by-step explanations with visual descriptions.
 
 IMPORTANT: End EVERY answer with this exact format:
+
+[VISUAL_START]
+{"type": "<one exact type from the allowed list below>", "title": "<short 2-6 word title>", "data": { ... }}
+[VISUAL_END]
+
+Rules for the visualization block:
+- Generate exactly ONE visualization. Never more than one.
+- The visualization must always represent the MAIN concept of your answer, not a side detail.
+- Never randomly pick an unrelated type — pick the closest, most accurate match.
+- Never change the type between similar/repeated questions on the same concept.
+- If truly nothing fits, use "generic_diagram".
+- YOU (the same model writing the answer) must also supply the "data" object with the ACTUAL real values from this specific question/answer, not placeholder examples. This is what makes the diagram genuinely match the question instead of showing a generic example.
+
+"data" fields per type (include only when the type needs them; omit "data" entirely for types with no dynamic content, like heart/brain/osi_model):
+- math_graph: for a quadratic  {"kind":"quadratic","a":<num>,"b":<num>,"c":<num>}
+             for a graph line  {"kind":"linear","m":<num>,"c":<num>}
+             for "solve for x" {"kind":"linear_solve","a":<num>,"b":<num>,"rhs":<num>}  (from a x + b = rhs)
+- linked_list: {"nodes":[<the actual values from the question, e.g. 7,3,9,1>]}
+- stack: {"items":["A","B","C"]}  (actual values/labels from the question, top of stack = last item)
+- queue: {"items":["A","B","C"]}  (actual values/labels, front = first item)
+- binary_tree / bst: {"values":[<actual node values in level order, e.g. 8,4,12,2,6,10,14>]}
+
+Allowed types (pick exactly one):
+math_graph, geometry_diagram,
+molecule_structure, bohr_model, orbital, ionic_bond, covalent_bond, vsepr_theory, ph_scale, benzene_structure, periodic_table, electrolysis,
+cell_cycle, mitosis, meiosis, plant_cell, animal_cell, dna_structure, photosynthesis, food_chain, punnett_square, nervous_system, heart, brain, digestive_system, respiratory_system, circulatory_system, kidney, eye, ear, human_skeleton, muscle,
+motion_diagram, force_diagram, collision, energy_transfer, wave, interference, diffraction, electric_field, circuit_diagram, ray_diagram, lens, mirror,
+neural_network, cnn, rnn, attention, gradient_descent, algorithm_flow,
+osi_model, tcp_ip, router, switch, dns, http, compiler, linked_list, stack, queue, binary_tree, bst, hash_table,
+generic_diagram
+
+Examples of correct mapping:
+- Atomic structure -> bohr_model
+- Networking / OSI layers -> osi_model
+- DNA -> dna_structure
+- Human heart -> heart
+- Transformer architecture -> neural_network
+- Linked list -> linked_list
+- Stack -> stack
+- Queue -> queue
+- Binary tree -> binary_tree
+- Photosynthesis -> photosynthesis
+- Digestive system -> digestive_system
+
+After the visualization block, include:
 
 [QUIZ_START]
 Q1: [question about the topic]
@@ -103,10 +165,23 @@ Answer: A
 5. [follow-up question 5]
 [FOLLOWUP_END]
 
+For any mathematical or chemical expression in your answer, always wrap it in KaTeX-compatible delimiters so it renders properly — use $$...$$ for standalone/display equations (e.g. $$E=mc^2$$, $$\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$$) and \\(...\\) for inline expressions. Always use proper LaTeX chemistry notation for formulas (e.g. $$H_2SO_4$$, $$Na^+$$) instead of plain text.
+
 Make the answer perfect, professional and educational.`;
 }
 
 function parseResponse(response) {
+  const visualMatch = response.match(/\[VISUAL_START\]([\s\S]*?)\[VISUAL_END\]/);
+  let visual = null;
+  if (visualMatch) {
+    try {
+      const parsedVisual = JSON.parse(visualMatch[1].trim());
+      if (parsedVisual && parsedVisual.type) visual = parsedVisual;
+    } catch {
+      visual = null;
+    }
+  }
+
   const quizMatch = response.match(/\[QUIZ_START\]([\s\S]*?)\[FOLLOWUP_START\]/);
   const followupMatch = response.match(/\[FOLLOWUP_START\]([\s\S]*?)\[FOLLOWUP_END\]/);
 
@@ -135,10 +210,11 @@ function parseResponse(response) {
   }
 
   const answerText = response
+    .replace(/\[VISUAL_START\][\s\S]*?\[VISUAL_END\]/g, "")
     .replace(/\[QUIZ_START\][\s\S]*?\[FOLLOWUP_START\][\s\S]*?\[FOLLOWUP_END\]/g, "")
     .trim();
 
-  return { answerText, quiz, followUp };
+  return { answerText, quiz, followUp, visual };
 }
 
 async function groqChat({ systemPrompt, messages, maxTokens = 4000 }) {
@@ -242,7 +318,7 @@ export default function ChatPage() {
   const [quizScore, setQuizScore] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
-  const [diagramType, setDiagramType] = useState("Generic Diagram");
+  const [diagramMeta, setDiagramMeta] = useState(null);
 
   const DAILY_CREDITS = 100;
   const CREDIT_KEY = "intellia_credits";
@@ -410,6 +486,14 @@ export default function ChatPage() {
   const handleSolve = async () => {
     if (!inputValue.trim() || loading) return;
 
+    // ✅ Once the user actively asks something, the subject must stay put —
+    // otherwise a question typed while the hero was mid-cycle could get
+    // tagged with whatever subject happened to be showing at that instant.
+    if (cycleRef.current) {
+      clearInterval(cycleRef.current);
+      cycleRef.current = null;
+    }
+
     if (credits <= 0) {
       setShowNoCredits(true);
       return;
@@ -456,12 +540,12 @@ export default function ChatPage() {
         maxTokens: 4000,
       });
 
-      const { answerText, quiz, followUp } = parseResponse(text);
+      const { answerText, quiz, followUp, visual } = parseResponse(text);
 
       setAnswer(answerText);
       setQuizData(quiz.length > 0 ? quiz : generateFallbackQuiz(subject.name));
       setFollowUpQuestions(followUp.length > 0 ? followUp : generateFallbackFollowUp());
-      setDiagramType(detectDiagramType(question, subject.name));
+      setDiagramMeta(visual || { type: SUBJECT_DEFAULT_DIAGRAM[subject.name] || "generic_diagram", title: subject.name });
       setInputValue("");
 
       const chatTitle = question.substring(0, 50) + (question.length > 50 ? "..." : "");
@@ -546,27 +630,6 @@ export default function ChatPage() {
     "What is the next level of difficulty?",
   ];
 
-  const detectDiagramType = (question, subject) => {
-    const q = question.toLowerCase();
-    if (subject === "Chemistry") {
-      if (q.includes("structure") || q.includes("bond") || q.includes("molecule")) return "Molecule Structure";
-      if (q.includes("cycle") || q.includes("reaction")) return "Reaction Cycle";
-    }
-    if (subject === "Biology") {
-      if (q.includes("mitosis") || q.includes("meiosis") || q.includes("cell")) return "Cell Cycle";
-      if (q.includes("photosynthesis") || q.includes("respiration")) return "Process Cycle";
-      if (q.includes("dna") || q.includes("protein")) return "DNA Structure";
-    }
-    if (subject === "Physics") {
-      if (q.includes("graph") || q.includes("motion") || q.includes("velocity")) return "Motion Diagram";
-      if (q.includes("force") || q.includes("energy")) return "Force Diagram";
-    }
-    if (subject === "Mathematics") {
-      if (q.includes("graph") || q.includes("function") || q.includes("plot")) return "Graph Plot";
-      if (q.includes("triangle") || q.includes("geometry")) return "Geometry Diagram";
-    }
-    return "Generic Diagram";
-  };
 
   const handleQuizAnswer = (questionIdx, optionIdx) => {
     setQuizAnswers((prev) => ({ ...prev, [questionIdx]: optionIdx }));
@@ -645,8 +708,7 @@ export default function ChatPage() {
           cursor: pointer;
           border-radius: 24px;
           overflow: hidden;
-          background: rgba(255,255,255,0.045);
-          backdrop-filter: blur(20px);
+          background: rgba(30,35,50,0.55);
           border: 1px solid rgba(255,255,255,0.1);
           box-shadow: 0 20px 50px rgba(0,0,0,0.35);
           transition: transform 0.35s ease, box-shadow 0.35s ease, border-color .35s ease;
@@ -853,7 +915,7 @@ export default function ChatPage() {
         <div
           style={{
             maxWidth: 860, width: "100%", padding: "16px", borderRadius: 18,
-            background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)",
+            background: "rgba(30,35,50,0.6)",
             border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 20px 45px rgba(0,0,0,0.35)",
             marginBottom: 12,
           }}
@@ -994,8 +1056,7 @@ export default function ChatPage() {
               {quizData.length > 0 && (
                 <div style={{ marginTop: 32, paddingTop: 24, borderTop: `1px solid ${accent}22` }}>
                   <div className="diagram-stage">
-                    <DiagramVisualizer type={diagramType} subject={subject.name} accent={accent} />
-                    <AdvancedDiagramRenderer topic={currentQuestion} subject={subject.name} accent={accent} />
+                    <DiagramVisualizer type={diagramMeta?.type || "generic_diagram"} title={diagramMeta?.title} data={diagramMeta?.data} subject={subject.name} accent={accent} question={currentQuestion} />
                   </div>
                   <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                     <p style={{ fontSize: 12, color: "#94a3b8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>Key Elements</p>
